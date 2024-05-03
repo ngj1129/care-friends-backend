@@ -1,4 +1,4 @@
 package hongikchildren.carefriends.repository;
 
-public class MedicineRepository {
+public interface MedicineRepository {
 }
