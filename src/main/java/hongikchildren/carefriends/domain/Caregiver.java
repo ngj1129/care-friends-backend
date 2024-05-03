@@ -1,5 +1,6 @@
 package hongikchildren.carefriends.domain;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+
 @Getter
 @NoArgsConstructor
 public class Caregiver {
@@ -22,7 +23,8 @@ public class Caregiver {
 
     private String phoneNumber;
 
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private LocalDate birthDate;
 
@@ -31,12 +33,12 @@ public class Caregiver {
 
 
     @Builder
-    protected Caregiver(Long id, String name, String phoneNumber, String gender, LocalDate birthDate, List<Friends> friends) {
+    protected Caregiver(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.friends = friends;
     }
+
 }
