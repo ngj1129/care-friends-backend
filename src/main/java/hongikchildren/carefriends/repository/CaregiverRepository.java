@@ -1,4 +1,8 @@
 package hongikchildren.carefriends.repository;
 
-public class CaregiverRepository {
+import hongikchildren.carefriends.domain.Caregiver;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CaregiverRepository extends JpaRepository<Caregiver, Long> {
+
 }
