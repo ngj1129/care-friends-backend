@@ -1,4 +1,4 @@
-package hongikchildren.carefriends.domain;
-
-public class Task {
-}
+//package hongikchildren.carefriends.domain;
+//
+//public class Task {
+//}

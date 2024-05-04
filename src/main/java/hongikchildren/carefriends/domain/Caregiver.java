@@ -1,6 +1,5 @@
 package hongikchildren.carefriends.domain;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Entity
 @Getter
 @NoArgsConstructor
 public class Caregiver {
@@ -40,5 +40,7 @@ public class Caregiver {
         this.gender = gender;
         this.birthDate = birthDate;
     }
+
+
 
 }

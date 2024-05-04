@@ -12,18 +12,18 @@ import java.util.Date;
 
 @SpringBootTest
 class CarefriendsApplicationTests {
-//
-//	@Test
-//	void CaregiverConstructionTest(){
-//		Caregiver caregiver = Caregiver.builder()
-//				.name("taesoon")
-//				.phoneNumber("010-4784-9904")
-//				.gender(Gender.MALE)
-//				.birthDate(LocalDate.of(1999, 4, 24))
-//				.build();
-//
-//		String num = caregiver.getPhone
-//		Assertions.assertThat("010-4784-9904").isEqualTo(num);
-//	}
+
+	@Test
+	void CaregiverConstructionTest(){
+		Caregiver caregiver = Caregiver.builder()
+				.name("taesoon")
+				.phoneNumber("010-4784-9904")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1999, 4, 24))
+				.build();
+
+		String num = caregiver.getPhoneNumber();
+		Assertions.assertThat("010-4784-9904").isEqualTo(num);
+	}
 
 }
