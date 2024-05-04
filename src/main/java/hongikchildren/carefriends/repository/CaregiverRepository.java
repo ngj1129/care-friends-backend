@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CaregiverRepository extends JpaRepository<Caregiver, Long> {
-    Optional<Caregiver> findByCaregiverId(Long caregiverId);
-    List<Caregiver> findByCaregiverName(String caregiverName);
+    Optional<Caregiver> findById(Long id);
+    List<Caregiver> findByName(String name);
 
 }

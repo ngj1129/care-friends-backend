@@ -24,14 +24,13 @@ public class Schedule {
     @JoinColumn(name = "friendsId")
     private Friends friends;
 
-    @OneToMany(mappedBy = "schedule")
-    private List<Task> tasks = new ArrayList<>();
+//    @OneToMany(mappedBy = "schedule")
+//    private List<Task> tasks = new ArrayList<>();
 
     @Builder
-    protected Schedule(Long id, LocalDate day, Friends friends, List<Task> tasks) {
+    protected Schedule(Long id, LocalDate day, Friends friends) {
         this.id = id;
         this.day = day;
         this.friends = friends;
-        this.tasks = tasks;
     }
 }

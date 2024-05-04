@@ -2,6 +2,7 @@ package hongikchildren.carefriends.domain;
 
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,21 @@ public class Friends {
 
     private LocalDate birthDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "caregiverId")
+    private Caregiver caregiver;
+
+    @Builder
+    public Friends(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.birthDate = birthDate;
+    }
+
+    // Caregiver 설정 메서드
+    public void setCaregiver(Caregiver caregiver){
+        this.caregiver = caregiver;
+    }
 }
