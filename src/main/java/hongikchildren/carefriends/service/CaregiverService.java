@@ -6,6 +6,7 @@ import hongikchildren.carefriends.domain.Friends;
 import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.repository.CaregiverRepository;
 import hongikchildren.carefriends.repository.FriendsRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,5 +78,7 @@ public class CaregiverService {
     public void deleteCaregiver(Long id){
         caregiverRepository.deleteById(id);
     }
+
+    // Caregiver의 Friends 등록 추가해야함
 
 }
