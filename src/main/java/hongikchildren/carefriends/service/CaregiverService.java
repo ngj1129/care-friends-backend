@@ -74,7 +74,6 @@ public class CaregiverService {
         caregiverRepository.deleteById(id);
     }
 
-
     // Caregiver가 관리하는 friends 등록
     @Transactional
     public void addFriendsToCaregiver(Long caregiverId, Friends friends){
