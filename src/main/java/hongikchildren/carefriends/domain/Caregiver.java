@@ -42,5 +42,16 @@ public class Caregiver {
     }
 
 
+    // Friends 추가 메서드
+    public void addFriends(Friends friends){
+        this.friends.add(friends);
+        friends.setCaregiver(this); // friends 엔티티의 caregiver 설정
+    }
+
+    // Friends 삭제 메서드
+    public void removeFriends(Friends friends){
+        this.friends.remove(friends);
+        friends.removeCaregiver(); // friends 엔티티의 caregiver 초기화
+    }
 
 }

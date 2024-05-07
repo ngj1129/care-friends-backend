@@ -15,22 +15,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-
-// Transactional?
 @Service
-@Transactional
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class CaregiverService {
     private final CaregiverRepository caregiverRepository;
-//    private final FriendsRepository friendsRepository;
-
-    // 밑에 autowired 왜 쓰는지?
-    @Autowired
-    public CaregiverService(CaregiverRepository caregiverRepository) {
-        this.caregiverRepository = caregiverRepository;
-    }
 
 
     // Caregiver 저장
+    @Transactional
     public Caregiver saveCaregiver(String name, String phoneNum, Gender gender, LocalDate birthDate){
         Caregiver caregiver = Caregiver.builder()
                 .name(name)
@@ -54,6 +47,7 @@ public class CaregiverService {
     }
 
     // Caregiver 업데이트
+    @Transactional
     public Caregiver updateCaregiver(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate){
         Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(id);
         if (optionalCaregiver.isPresent()){
@@ -75,10 +69,40 @@ public class CaregiverService {
 
 
     // Caregiver 삭제
+    @Transactional
     public void deleteCaregiver(Long id){
         caregiverRepository.deleteById(id);
     }
 
-    // Caregiver의 Friends 등록 추가해야함
+    // Caregiver가 관리하는 friends 등록
+    @Transactional
+    public void addFriendsToCaregiver(Long caregiverId, Friends friends){
+        Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(caregiverId);
+        if (optionalCaregiver.isPresent()){
+            Caregiver caregiver = optionalCaregiver.get();
+            if(friends.getCaregiver() != null && !friends.getCaregiver().equals(caregiver)){ // 이미 friends를 다른 caregiver가 등록한 경우
+                throw new RuntimeException("이미 caregiver가 등록된 friends입니다.");
+            }
+
+            caregiver.addFriends(friends); // caregiver에 friends 추가
+            caregiverRepository.save(caregiver); // 변경된 caregiver 저장
+        } else{
+            throw new RuntimeException(caregiverId + "를 찾을 수 없음");
+        }
+    }
+
+    // Caregiver의 friends 삭제
+    @Transactional
+    public void deleteFriendFromCaregiver(Long caregiverId, Friends friends){
+        Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(caregiverId);
+        if (optionalCaregiver.isPresent()) {
+            Caregiver caregiver = optionalCaregiver.get();
+            caregiver.removeFriends(friends);
+            caregiverRepository.save(caregiver);
+        } else{
+            throw new RuntimeException(caregiverId + "를 찾을 수 없음");
+        }
+    }
+
 
 }
