@@ -24,8 +24,8 @@ public class Schedule {
     @JoinColumn(name = "friendsId")
     private Friends friends;
 
-//    @OneToMany(mappedBy = "schedule")
-//    private List<Task> tasks = new ArrayList<>();
+    @OneToMany(mappedBy = "schedule")
+    private List<Task> tasks = new ArrayList<>();
 
     @Builder
     protected Schedule(Long id, LocalDate day, Friends friends) {
