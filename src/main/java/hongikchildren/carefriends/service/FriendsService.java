@@ -5,6 +5,7 @@ import hongikchildren.carefriends.domain.Friends;
 import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.repository.CaregiverRepository;
 import hongikchildren.carefriends.repository.FriendsRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class FriendsService {
 
     private final FriendsRepository friendsRepository;
-
-    @Autowired
-    public FriendsService(FriendsRepository friendsRepository) {
-        this.friendsRepository = friendsRepository;
-    }
-
-
 
     // Friend 저장
     @Transactional
@@ -49,6 +44,7 @@ public class FriendsService {
     }
 
     // Friends 업데이트
+    @Transactional
     public Friends updateFriends(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate){
         Optional<Friends> optionalFriends = friendsRepository.findById(id);
         if (optionalFriends.isPresent()){
@@ -70,21 +66,8 @@ public class FriendsService {
 
 
     // Friend 삭제
+    @Transactional
     public void deleteFriends(Long id){
         friendsRepository.deleteById(id);
     }
-
-
-    // friends의 caregiver 등록하기
-    public void registerCaregiver(Long friendsId, Caregiver caregiver){
-        Optional<Friends> optionalFriends = friendsRepository.findById(friendsId);
-        if (optionalFriends.isPresent()){
-            Friends friends = optionalFriends.get();
-            friends.setCaregiver(caregiver); // caregiver 설정
-            friendsRepository.save(friends); // 엔티티 업데이트
-        } else{
-            throw new RuntimeException(friendsId + "를 찾을 수 없음");
-        }
-    }
-
 }

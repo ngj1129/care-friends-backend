@@ -43,4 +43,11 @@ public class Friends {
     public void setCaregiver(Caregiver caregiver){
         this.caregiver = caregiver;
     }
+
+    // Caregiver 초기화 메서드
+    public void removeCaregiver(){
+        this.caregiver = null;
+    }
+
+
 }
