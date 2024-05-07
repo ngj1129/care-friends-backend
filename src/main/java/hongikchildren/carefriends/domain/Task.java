@@ -11,7 +11,8 @@ import java.time.LocalTime;
 public class Task {
 
     @Id @GeneratedValue
-    private Long id;
+    @Column(name="taskId")
+    private Long id;:
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="scheduleId")
