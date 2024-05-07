@@ -12,7 +12,7 @@ public class Task {
 
     @Id @GeneratedValue
     @Column(name="taskId")
-    private Long id;:
+    private Long id;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="scheduleId")
