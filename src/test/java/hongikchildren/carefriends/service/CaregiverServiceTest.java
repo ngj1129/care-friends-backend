@@ -9,6 +9,7 @@ import hongikchildren.carefriends.repository.FriendRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -110,7 +111,7 @@ public class CaregiverServiceTest {
     }
 
     @Test
-    public void testAddFriendToCaregiver(){
+    public void testAddFriendsToCaregiver(){
         // Given
         Caregiver caregiver1 = caregiverService.saveCaregiver("hyeyoon", "010-2222-3333", Gender.FEMALE, LocalDate.of(2001, 11, 29));
         Caregiver caregiver2 = caregiverService.saveCaregiver("caregiver2", "010-2222-3333", Gender.FEMALE, LocalDate.of(2001, 11, 29));
@@ -127,7 +128,7 @@ public class CaregiverServiceTest {
         // then
         assertEquals(caregiver1.getName(), friend1.getCaregiver().getName());
         assertEquals(caregiver1.getName(), friend2.getCaregiver().getName());
-        assertEquals(3, caregiver1.getFriend().size());
+        assertEquals(3, caregiver1.getFriends().size());
 
         // 이미 caregiver1에게 등록된 friend3을 caregiver2에게 등록할 때 예외 발생 확인
         assertThrows(RuntimeException.class, () -> caregiverService.addFriendToCaregiver(caregiver2.getId(), friend3));
@@ -147,8 +148,8 @@ public class CaregiverServiceTest {
         caregiverService.deleteFriendFromCaregiver(caregiver.getId(), friend1);
 
         // then
-        assertEquals(1, caregiver.getFriend().size());
-        assertEquals(friend2, caregiver.getFriend().get(0));
+        assertEquals(1, caregiver.getFriends().size());
+        assertEquals(friend2, caregiver.getFriends().get(0));
         assertNull(friend1.getCaregiver());
     }
 }

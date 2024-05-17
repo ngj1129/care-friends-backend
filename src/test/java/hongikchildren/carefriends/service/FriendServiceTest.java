@@ -32,7 +32,7 @@ public class FriendServiceTest {
         LocalDate birthDate = LocalDate.of(1999, 11, 22);
 
         // when
-        Friend savedFriend = friendService.saveFriends(name, phoneNumber, gender, birthDate);
+        Friend savedFriend = friendService.saveFriend(name, phoneNumber, gender, birthDate);
 
         // then
         assertNotNull(savedFriend.getId());

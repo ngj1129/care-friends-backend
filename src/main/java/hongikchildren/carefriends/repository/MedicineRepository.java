@@ -12,5 +12,5 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     List<Medicine> findByName(String name);
 
     //spring data jpa가 프록시 객체 생성하고 조인 쿼리 생성해줌.
-    List<Medicine> findByFriends(Friend friend);
+    List<Medicine> findByFriend(Friend friend);
 }
