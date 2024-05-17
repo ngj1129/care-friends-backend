@@ -127,8 +127,7 @@ public class CaregiverServiceTest {
         // then
         assertEquals(caregiver1.getName(), friend1.getCaregiver().getName());
         assertEquals(caregiver1.getName(), friend2.getCaregiver().getName());
-        assertEquals(3, caregiver1.getFriend().size());
-
+        assertEquals(3, caregiver1.getFriends().size());
         // 이미 caregiver1에게 등록된 friend3을 caregiver2에게 등록할 때 예외 발생 확인
         assertThrows(RuntimeException.class, () -> caregiverService.addFriendToCaregiver(caregiver2.getId(), friend3));
     }
@@ -147,8 +146,8 @@ public class CaregiverServiceTest {
         caregiverService.deleteFriendFromCaregiver(caregiver.getId(), friend1);
 
         // then
-        assertEquals(1, caregiver.getFriend().size());
-        assertEquals(friend2, caregiver.getFriend().get(0));
+        assertEquals(1, caregiver.getFriends().size());
+        assertEquals(friend2, caregiver.getFriends().get(0));
         assertNull(friend1.getCaregiver());
     }
 }

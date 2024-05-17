@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,7 +17,7 @@ import java.time.LocalTime;
 public class Friend {
 
     @Id @GeneratedValue
-    @Column(name = "friendsId")
+    @Column(name = "friendId")
     private Long id;
 
     private String name;
@@ -34,6 +36,9 @@ public class Friend {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "caregiverId")
     private Caregiver caregiver;
+
+    @OneToMany(mappedBy = "friend")
+    private List<Task> tasks =new ArrayList<>();
 
     @Builder
     public Friend(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {

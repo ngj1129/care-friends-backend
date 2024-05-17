@@ -3,12 +3,14 @@ package hongikchildren.carefriends.service;
 import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Medicine;
 import hongikchildren.carefriends.domain.TakeTime;
+import hongikchildren.carefriends.domain.*;
 import hongikchildren.carefriends.repository.MedicineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -32,12 +34,43 @@ public class MedicineService {
                 .caution(caution)
                 .effect(effect)
                 .build();
+
+
+        /**
+         * 자동 Task 추가
+         */
+        for (LocalDate date = takeStart; !date.isAfter(takeEnd); date = date.plusDays(1)) {
+            Task task = Task.builder()
+                    .day(date)
+                    .title(name)
+                    .taskType(TaskType.MEDICINE)
+                    .status(Status.YET)
+                    .startTime(LocalTime.now())
+                    .signalTime(LocalTime.now())
+                    .build();
+
+
+//            Schedule schedule;
+//            if (scheduleRepository.findByDay(date).isPresent()) {
+//                //원래 있던 스케줄 가져옴
+//                schedule = scheduleRepository.findByDay(date).get();
+//            }
+//            else {
+//                //스케줄 새로 생성
+//                schedule = Schedule.builder()
+//                        .day(date)
+//                        .build();
+//                scheduleRepository.save(schedule);
+//            }
+//            schedule.addTask(task);
+//            task.setSchedule(schedule);
+        }
         return medicineRepository.save(medicine);
     }
 
     //프렌즈 -> 약 조회
     public List<Medicine> getAllMedicines(Friend friend) {
-        return medicineRepository.findByFriends(friend);
+        return medicineRepository.findByFriend(friend);
     }
 
     //업데이트
