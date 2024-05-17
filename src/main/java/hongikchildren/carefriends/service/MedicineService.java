@@ -16,29 +16,6 @@ import java.util.List;
 public class MedicineService {
 
     private final MedicineRepository medicineRepository;
-    //private final ScheduleRepository scheduleRepository;
-
-    /*
-    @Id @GeneratedValue
-    @Column(name="taskId")
-    private Long id;
-
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="scheduleId")
-    private Schedule schedule;
-
-    private Long groupId;
-
-    @Enumerated(EnumType.STRING)
-    private TaskType taskType;
-    @Enumerated(EnumType.STRING)
-    private Status status;
-    private LocalTime startTime;
-    private LocalTime signalTime;
-    private String title;
-    private String location;
-    private String memo;
-     */
 
     //등록 시 id 반환과 엔티티 반환 차이
     //인자 받는 방법: Medicine 객체 or 모든 필드

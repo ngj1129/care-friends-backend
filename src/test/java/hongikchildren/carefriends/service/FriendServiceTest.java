@@ -3,7 +3,7 @@ package hongikchildren.carefriends.service;
 
 import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Gender;
-import hongikchildren.carefriends.repository.FriendsRepository;
+import hongikchildren.carefriends.repository.FriendRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +21,7 @@ public class FriendServiceTest {
     private FriendService friendService;
 
     @Autowired
-    private FriendsRepository friendsRepository;
+    private FriendRepository friendRepository;
 
     @Test
     public void testSaveFriends(){
@@ -32,7 +32,7 @@ public class FriendServiceTest {
         LocalDate birthDate = LocalDate.of(1999, 11, 22);
 
         // when
-        Friend savedFriend = friendService.saveFriends(name, phoneNumber, gender, birthDate);
+        Friend savedFriend = friendService.saveFriend(name, phoneNumber, gender, birthDate);
 
         // then
         assertNotNull(savedFriend.getId());

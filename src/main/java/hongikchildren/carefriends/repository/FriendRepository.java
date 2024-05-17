@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface FriendsRepository extends JpaRepository<Friend, Long> {
+public interface FriendRepository extends JpaRepository<Friend, Long> {
     List<Friend> findByName(String name);
 
     Optional<Friend> findById(Long friendId);

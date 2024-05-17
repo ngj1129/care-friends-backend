@@ -5,10 +5,11 @@ import hongikchildren.carefriends.domain.Caregiver;
 import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.repository.CaregiverRepository;
-import hongikchildren.carefriends.repository.FriendsRepository;
+import hongikchildren.carefriends.repository.FriendRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -30,7 +31,7 @@ public class CaregiverServiceTest {
     @Autowired
     private CaregiverRepository caregiverRepository;
     @Autowired
-    private FriendsRepository friendsRepository;
+    private FriendRepository friendRepository;
 
     @Test
     public void testSaveCaregiver(){
@@ -114,34 +115,34 @@ public class CaregiverServiceTest {
         // Given
         Caregiver caregiver1 = caregiverService.saveCaregiver("hyeyoon", "010-2222-3333", Gender.FEMALE, LocalDate.of(2001, 11, 29));
         Caregiver caregiver2 = caregiverService.saveCaregiver("caregiver2", "010-2222-3333", Gender.FEMALE, LocalDate.of(2001, 11, 29));
-        Friend friend1 = friendService.saveFriends("kim", "0129-2312", Gender.FEMALE, LocalDate.of(2000,11,11));
-        Friend friend2 = friendService.saveFriends("jeong", "0113-2332", Gender.MALE, LocalDate.of(1999,1,11));
-        Friend friend3 = friendService.saveFriends("friends3", "0113-2332", Gender.MALE, LocalDate.of(1999,1,11));
+        Friend friend1 = friendService.saveFriend("kim", "0129-2312", Gender.FEMALE, LocalDate.of(2000,11,11));
+        Friend friend2 = friendService.saveFriend("jeong", "0113-2332", Gender.MALE, LocalDate.of(1999,1,11));
+        Friend friend3 = friendService.saveFriend("friends3", "0113-2332", Gender.MALE, LocalDate.of(1999,1,11));
 
 
         // when
-        caregiverService.addFriendsToCaregiver(caregiver1.getId(), friend1);
-        caregiverService.addFriendsToCaregiver(caregiver1.getId(), friend2);
-        caregiverService.addFriendsToCaregiver(caregiver1.getId(), friend3);
+        caregiverService.addFriendToCaregiver(caregiver1.getId(), friend1);
+        caregiverService.addFriendToCaregiver(caregiver1.getId(), friend2);
+        caregiverService.addFriendToCaregiver(caregiver1.getId(), friend3);
 
         // then
         assertEquals(caregiver1.getName(), friend1.getCaregiver().getName());
         assertEquals(caregiver1.getName(), friend2.getCaregiver().getName());
         assertEquals(3, caregiver1.getFriends().size());
 
-        // 이미 caregiver1에게 등록된 friends3을 caregiver2에게 등록할 때 예외 발생 확인
-        assertThrows(RuntimeException.class, () -> caregiverService.addFriendsToCaregiver(caregiver2.getId(), friend3));
+        // 이미 caregiver1에게 등록된 friend3을 caregiver2에게 등록할 때 예외 발생 확인
+        assertThrows(RuntimeException.class, () -> caregiverService.addFriendToCaregiver(caregiver2.getId(), friend3));
     }
 
     @Test
     public void testDeleteFriendFromCaregiver(){
         // Given
         Caregiver caregiver = caregiverService.saveCaregiver("hyeyoon", "010-2222-3333", Gender.FEMALE, LocalDate.of(2001, 11, 29));
-        Friend friend1 = friendService.saveFriends("kim", "0129-2312", Gender.FEMALE, LocalDate.of(2000,11,11));
-        Friend friend2 = friendService.saveFriends("jeong", "0113-2332", Gender.MALE, LocalDate.of(1999,1,11));
+        Friend friend1 = friendService.saveFriend("kim", "0129-2312", Gender.FEMALE, LocalDate.of(2000,11,11));
+        Friend friend2 = friendService.saveFriend("jeong", "0113-2332", Gender.MALE, LocalDate.of(1999,1,11));
 
-        caregiverService.addFriendsToCaregiver(caregiver.getId(), friend1);
-        caregiverService.addFriendsToCaregiver(caregiver.getId(), friend2);
+        caregiverService.addFriendToCaregiver(caregiver.getId(), friend1);
+        caregiverService.addFriendToCaregiver(caregiver.getId(), friend2);
 
         // when
         caregiverService.deleteFriendFromCaregiver(caregiver.getId(), friend1);

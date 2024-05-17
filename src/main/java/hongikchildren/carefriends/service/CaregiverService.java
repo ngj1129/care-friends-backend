@@ -74,7 +74,7 @@ public class CaregiverService {
 
     // Caregiver가 관리하는 friends 등록
     @Transactional
-    public void addFriendsToCaregiver(Long caregiverId, Friend friend){
+    public void addFriendToCaregiver(Long caregiverId, Friend friend){
         Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(caregiverId);
         if (optionalCaregiver.isPresent()){
             Caregiver caregiver = optionalCaregiver.get();
