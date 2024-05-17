@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Friends {
+public class Friend {
 
     @Id @GeneratedValue
     @Column(name = "friendsId")
@@ -36,7 +36,7 @@ public class Friends {
     private Caregiver caregiver;
 
     @Builder
-    public Friends(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {
+    public Friend(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;

@@ -1,6 +1,6 @@
 package hongikchildren.carefriends.service;
 
-import hongikchildren.carefriends.domain.Friends;
+import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Medicine;
 import hongikchildren.carefriends.domain.TakeTime;
 import hongikchildren.carefriends.repository.MedicineRepository;
@@ -36,8 +36,8 @@ public class MedicineService {
     }
 
     //프렌즈 -> 약 조회
-    public List<Medicine> getAllMedicines(Friends friends) {
-        return medicineRepository.findByFriends(friends);
+    public List<Medicine> getAllMedicines(Friend friend) {
+        return medicineRepository.findByFriends(friend);
     }
 
     //업데이트
