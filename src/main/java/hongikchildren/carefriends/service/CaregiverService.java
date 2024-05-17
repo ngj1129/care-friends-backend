@@ -2,12 +2,10 @@ package hongikchildren.carefriends.service;
 
 
 import hongikchildren.carefriends.domain.Caregiver;
-import hongikchildren.carefriends.domain.Friends;
+import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.repository.CaregiverRepository;
-import hongikchildren.carefriends.repository.FriendsRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,15 +74,15 @@ public class CaregiverService {
 
     // Caregiver가 관리하는 friends 등록
     @Transactional
-    public void addFriendsToCaregiver(Long caregiverId, Friends friends){
+    public void addFriendToCaregiver(Long caregiverId, Friend friend){
         Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(caregiverId);
         if (optionalCaregiver.isPresent()){
             Caregiver caregiver = optionalCaregiver.get();
-            if(friends.getCaregiver() != null && !friends.getCaregiver().equals(caregiver)){ // 이미 friends를 다른 caregiver가 등록한 경우
+            if(friend.getCaregiver() != null && !friend.getCaregiver().equals(caregiver)){ // 이미 friends를 다른 caregiver가 등록한 경우
                 throw new RuntimeException("이미 caregiver가 등록된 friends입니다.");
             }
 
-            caregiver.addFriends(friends); // caregiver에 friends 추가
+            caregiver.addFriend(friend); // caregiver에 friends 추가
             caregiverRepository.save(caregiver); // 변경된 caregiver 저장
         } else{
             throw new RuntimeException(caregiverId + "를 찾을 수 없음");
@@ -93,11 +91,11 @@ public class CaregiverService {
 
     // Caregiver의 friends 삭제
     @Transactional
-    public void deleteFriendFromCaregiver(Long caregiverId, Friends friends){
+    public void deleteFriendFromCaregiver(Long caregiverId, Friend friend){
         Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(caregiverId);
         if (optionalCaregiver.isPresent()) {
             Caregiver caregiver = optionalCaregiver.get();
-            caregiver.removeFriends(friends);
+            caregiver.removeFriend(friend);
             caregiverRepository.save(caregiver);
         } else{
             throw new RuntimeException(caregiverId + "를 찾을 수 없음");

@@ -34,8 +34,8 @@ public class Medicine {
     private String effect;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "friendsId")
-    private Friends friends;
+    @JoinColumn(name = "friendId")
+    private Friend friend;
 
     @Builder
     public Medicine(Long id, String name, TakeTime takeTime, LocalDate takeStart, LocalDate takeEnd, int numPerDay, String imgUrl, String caution, String effect) {

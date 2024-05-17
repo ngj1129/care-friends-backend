@@ -21,16 +21,16 @@ public class Schedule {
     private LocalDate day;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "friendsId")
-    private Friends friends;
+    @JoinColumn(name = "friendId")
+    private Friend friend;
 
     @OneToMany(mappedBy = "schedule")
     private List<Task> tasks = new ArrayList<>();
 
     @Builder
-    protected Schedule(Long id, LocalDate day, Friends friends) {
+    protected Schedule(Long id, LocalDate day, Friend friend) {
         this.id = id;
         this.day = day;
-        this.friends = friends;
+        this.friend = friend;
     }
 }
