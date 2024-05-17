@@ -7,14 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Friends {
+public class Friend {
 
     @Id @GeneratedValue
-    @Column(name = "friendsId")
+    @Column(name = "friendId")
     private Long id;
 
     private String name;
@@ -30,8 +32,11 @@ public class Friends {
     @JoinColumn(name = "caregiverId")
     private Caregiver caregiver;
 
+    @OneToMany(mappedBy = "friend")
+    private List<Task> tasks =new ArrayList<>();
+
     @Builder
-    public Friends(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
+    public Friend(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;

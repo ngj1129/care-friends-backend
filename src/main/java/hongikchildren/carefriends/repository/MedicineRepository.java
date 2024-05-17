@@ -1,7 +1,6 @@
 package hongikchildren.carefriends.repository;
 
-import hongikchildren.carefriends.domain.Caregiver;
-import hongikchildren.carefriends.domain.Friends;
+import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Medicine;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +12,5 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     List<Medicine> findByName(String name);
 
     //spring data jpa가 프록시 객체 생성하고 조인 쿼리 생성해줌.
-    List<Medicine> findByFriends(Friends friends);
+    List<Medicine> findByFriend(Friend friend);
 }

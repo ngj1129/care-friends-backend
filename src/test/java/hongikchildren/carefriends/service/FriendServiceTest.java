@@ -1,7 +1,7 @@
 package hongikchildren.carefriends.service;
 
 
-import hongikchildren.carefriends.domain.Friends;
+import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.repository.FriendsRepository;
 import org.junit.jupiter.api.Test;
@@ -16,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-public class FriendsServiceTest {
+public class FriendServiceTest {
     @Autowired
-    private FriendsService friendsService;
+    private FriendService friendService;
 
     @Autowired
     private FriendsRepository friendsRepository;
@@ -32,14 +32,14 @@ public class FriendsServiceTest {
         LocalDate birthDate = LocalDate.of(1999, 11, 22);
 
         // when
-        Friends savedFriends = friendsService.saveFriends(name, phoneNumber, gender, birthDate);
+        Friend savedFriend = friendService.saveFriends(name, phoneNumber, gender, birthDate);
 
         // then
-        assertNotNull(savedFriends.getId());
-        assertEquals(name, savedFriends.getName());
-        assertEquals(phoneNumber, savedFriends.getPhoneNumber());
-        assertEquals(gender, savedFriends.getGender());
-        assertEquals(birthDate, savedFriends.getBirthDate());
+        assertNotNull(savedFriend.getId());
+        assertEquals(name, savedFriend.getName());
+        assertEquals(phoneNumber, savedFriend.getPhoneNumber());
+        assertEquals(gender, savedFriend.getGender());
+        assertEquals(birthDate, savedFriend.getBirthDate());
 
     }
 

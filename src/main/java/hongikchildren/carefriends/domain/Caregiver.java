@@ -29,7 +29,7 @@ public class Caregiver {
     private LocalDate birthDate;
 
     @OneToMany(mappedBy = "caregiver")
-    private List<Friends> friends =new ArrayList<>();
+    private List<Friend> friends =new ArrayList<>();
 
 
     @Builder
@@ -43,15 +43,15 @@ public class Caregiver {
 
 
     // Friends 추가 메서드
-    public void addFriends(Friends friends){
-        this.friends.add(friends);
-        friends.setCaregiver(this); // friends 엔티티의 caregiver 설정
+    public void addFriend(Friend friend){
+        this.friends.add(friend);
+        friend.setCaregiver(this); // friends 엔티티의 caregiver 설정
     }
 
     // Friends 삭제 메서드
-    public void removeFriends(Friends friends){
-        this.friends.remove(friends);
-        friends.removeCaregiver(); // friends 엔티티의 caregiver 초기화
+    public void removeFriend(Friend friend){
+        this.friends.remove(friend);
+        friend.removeCaregiver(); // friends 엔티티의 caregiver 초기화
     }
 
 }
