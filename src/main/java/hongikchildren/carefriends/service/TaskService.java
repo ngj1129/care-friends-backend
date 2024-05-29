@@ -1,5 +1,6 @@
 package hongikchildren.carefriends.service;
 
+import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Status;
 import hongikchildren.carefriends.domain.Task;
 import hongikchildren.carefriends.domain.TaskType;
@@ -44,8 +45,9 @@ public class TaskService {
     //Task 추가. 알림시간은 시작시간 10분전으로 설정됨.
     //date: 선택한 날짜
     @Transactional
-    public Task saveTask(LocalDate day, LocalTime startTime, String title, String location, String memo, LocalDate date) {
+    public Task saveTask(Friend friend, LocalDate day, LocalTime startTime, String title, String location, String memo, LocalDate date) {
         Task task = Task.builder()
+                .friend(friend)
                 .day(day)
                 .startTime(startTime)
                 .signalTime(startTime.minusMinutes(10))

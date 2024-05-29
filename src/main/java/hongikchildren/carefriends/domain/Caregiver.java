@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity
@@ -15,9 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 public class Caregiver {
 
-    @Id @GeneratedValue
+//    @Id @GeneratedValue
+//    @Column(name = "caregiverId")
+//    private Long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "caregiverId")
-    private Long id;
+    private UUID id;
 
     private String name;
 
@@ -33,7 +39,7 @@ public class Caregiver {
 
 
     @Builder
-    protected Caregiver(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
+    protected Caregiver(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;

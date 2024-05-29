@@ -4,12 +4,14 @@ package hongikchildren.carefriends.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Task {
 
     @Id @GeneratedValue
@@ -39,8 +41,9 @@ public class Task {
     private String memo;
 
     @Builder
-    public Task(Long id, LocalDate day, Long groupId, LocalTime startTime, LocalTime signalTime, String title, String location, String memo, TaskType taskType, Status status) {
+    public Task(Long id, Friend friend, LocalDate day, Long groupId, LocalTime startTime, LocalTime signalTime, String title, String location, String memo, TaskType taskType, Status status) {
         this.id = id;
+        this.friend = friend;
         this.day = day;
         this.startTime = startTime;
         this.title = title;
@@ -51,7 +54,7 @@ public class Task {
         this.status = status;
     }
 
-//    public void setSchedule(Schedule schedule) {
-//        this.schedule = schedule;
-//    }
+    public void setFriend(Friend friend) { this.friend = friend; }
+
+    public void removeFriend() { this.friend = null; }
 }

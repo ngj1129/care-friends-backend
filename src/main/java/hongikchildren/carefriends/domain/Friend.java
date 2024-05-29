@@ -62,5 +62,17 @@ public class Friend {
         this.caregiver = null;
     }
 
+    // Task 추가 메서드
+    public void addTask(Task task){
+        this.tasks.add(task);
+        task.setFriend(this); // Task 엔티티의 Friend 설정
+    }
+
+    // Task 삭제 메서드
+    public void removeTask(Task task){
+        this.tasks.remove(task);
+        task.removeFriend(); // Task 엔티티의 Friend 초기화
+    }
+
 
 }
