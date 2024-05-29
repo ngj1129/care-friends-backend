@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,13 +41,13 @@ public class CaregiverService {
     }
 
     // ID로 Caregiver 조회
-    public Optional<Caregiver> getCaregiverById(Long id){
+    public Optional<Caregiver> getCaregiverById(UUID id){
         return caregiverRepository.findById(id);
     }
 
     // Caregiver 업데이트
     @Transactional
-    public Caregiver updateCaregiver(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate){
+    public Caregiver updateCaregiver(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate){
         Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(id);
         if (optionalCaregiver.isPresent()){
             Caregiver existingCaregiver = optionalCaregiver.get(); // get(): optional 객체가 값으로 채워져 있을 때 그 값(엔티티)을 반환
@@ -68,13 +69,13 @@ public class CaregiverService {
 
     // Caregiver 삭제
     @Transactional
-    public void deleteCaregiver(Long id){
+    public void deleteCaregiver(UUID id){
         caregiverRepository.deleteById(id);
     }
 
     // Caregiver가 관리하는 friends 등록
     @Transactional
-    public void addFriendToCaregiver(Long caregiverId, Friend friend){
+    public void addFriendToCaregiver(UUID caregiverId, Friend friend){
         Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(caregiverId);
         if (optionalCaregiver.isPresent()){
             Caregiver caregiver = optionalCaregiver.get();
@@ -91,7 +92,7 @@ public class CaregiverService {
 
     // Caregiver의 friends 삭제
     @Transactional
-    public void deleteFriendFromCaregiver(Long caregiverId, Friend friend){
+    public void deleteFriendFromCaregiver(UUID caregiverId, Friend friend){
         Optional<Caregiver> optionalCaregiver = caregiverRepository.findById(caregiverId);
         if (optionalCaregiver.isPresent()) {
             Caregiver caregiver = optionalCaregiver.get();

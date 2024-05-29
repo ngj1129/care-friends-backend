@@ -10,15 +10,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor
 public class Friend {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "friendId")
-    private Long id;
+    private UUID id;
 
     private String name;
 
@@ -40,8 +41,11 @@ public class Friend {
     @OneToMany(mappedBy = "friend")
     private List<Task> tasks =new ArrayList<>();
 
+    @OneToMany(mappedBy = "friend")
+    private List<FriendRequest> friendRequests = new ArrayList<>();
+
     @Builder
-    public Friend(Long id, String name, String phoneNumber, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {
+    public Friend(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;

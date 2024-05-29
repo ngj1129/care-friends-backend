@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,6 +50,7 @@ public class CaregiverServiceTest {
         assertEquals(phoneNumber, savedCaregiver.getPhoneNumber());
         assertEquals(gender, savedCaregiver.getGender());
         assertEquals(birthDate, savedCaregiver.getBirthDate());
+        System.out.println(savedCaregiver.getId());
     }
 
     @Test
@@ -82,7 +84,7 @@ public class CaregiverServiceTest {
     void testUpdateCaregiver() {
         // Given
         Caregiver savedCaregiver = caregiverService.saveCaregiver("kim", "010-3342-2142", Gender.MALE, LocalDate.of(1980, 5, 15));
-        Long caregiverId = savedCaregiver.getId();
+        UUID caregiverId = savedCaregiver.getId();
         String newName = "park";
         String newPhoneNumber = "010-2324-2313";
 
@@ -100,7 +102,7 @@ public class CaregiverServiceTest {
     void testDeleteCaregiver() {
         // Given
         Caregiver savedCaregiver = caregiverService.saveCaregiver("jeong", "010-1234-1234", Gender.MALE, LocalDate.of(2001, 5, 4));
-        Long caregiverId = savedCaregiver.getId();
+        UUID caregiverId = savedCaregiver.getId();
 
         // When
         caregiverService.deleteCaregiver(caregiverId);
