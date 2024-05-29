@@ -9,12 +9,12 @@ import hongikchildren.carefriends.repository.FriendRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cglib.core.Local;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,6 +50,7 @@ public class CaregiverServiceTest {
         assertEquals(phoneNumber, savedCaregiver.getPhoneNumber());
         assertEquals(gender, savedCaregiver.getGender());
         assertEquals(birthDate, savedCaregiver.getBirthDate());
+        System.out.println(savedCaregiver.getId());
     }
 
     @Test
@@ -83,7 +84,7 @@ public class CaregiverServiceTest {
     void testUpdateCaregiver() {
         // Given
         Caregiver savedCaregiver = caregiverService.saveCaregiver("kim", "010-3342-2142", Gender.MALE, LocalDate.of(1980, 5, 15));
-        Long caregiverId = savedCaregiver.getId();
+        UUID caregiverId = savedCaregiver.getId();
         String newName = "park";
         String newPhoneNumber = "010-2324-2313";
 
@@ -101,7 +102,7 @@ public class CaregiverServiceTest {
     void testDeleteCaregiver() {
         // Given
         Caregiver savedCaregiver = caregiverService.saveCaregiver("jeong", "010-1234-1234", Gender.MALE, LocalDate.of(2001, 5, 4));
-        Long caregiverId = savedCaregiver.getId();
+        UUID caregiverId = savedCaregiver.getId();
 
         // When
         caregiverService.deleteCaregiver(caregiverId);
@@ -111,7 +112,7 @@ public class CaregiverServiceTest {
     }
 
     @Test
-    public void testAddFriendsToCaregiver(){
+    public void testAddFriendToCaregiver(){
         // Given
         Caregiver caregiver1 = caregiverService.saveCaregiver("hyeyoon", "010-2222-3333", Gender.FEMALE, LocalDate.of(2001, 11, 29));
         Caregiver caregiver2 = caregiverService.saveCaregiver("caregiver2", "010-2222-3333", Gender.FEMALE, LocalDate.of(2001, 11, 29));
@@ -129,7 +130,6 @@ public class CaregiverServiceTest {
         assertEquals(caregiver1.getName(), friend1.getCaregiver().getName());
         assertEquals(caregiver1.getName(), friend2.getCaregiver().getName());
         assertEquals(3, caregiver1.getFriends().size());
-
         // 이미 caregiver1에게 등록된 friend3을 caregiver2에게 등록할 때 예외 발생 확인
         assertThrows(RuntimeException.class, () -> caregiverService.addFriendToCaregiver(caregiver2.getId(), friend3));
     }
