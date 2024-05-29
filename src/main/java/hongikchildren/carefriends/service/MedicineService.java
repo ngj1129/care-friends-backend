@@ -1,5 +1,8 @@
 package hongikchildren.carefriends.service;
 
+import hongikchildren.carefriends.domain.Friend;
+import hongikchildren.carefriends.domain.Medicine;
+import hongikchildren.carefriends.domain.TakeTime;
 import hongikchildren.carefriends.domain.*;
 import hongikchildren.carefriends.repository.MedicineRepository;
 import lombok.RequiredArgsConstructor;

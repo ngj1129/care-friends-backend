@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,12 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Caregiver {
 
-//    @Id @GeneratedValue
-//    @Column(name = "caregiverId")
-//    private Long id;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "caregiverId")
     private UUID id;
 
@@ -37,6 +34,9 @@ public class Caregiver {
     @OneToMany(mappedBy = "caregiver")
     private List<Friend> friends =new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "caregiver")
+    private List<FriendRequest> friendRequests = new ArrayList<>();
 
     @Builder
     protected Caregiver(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
