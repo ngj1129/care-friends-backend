@@ -36,35 +36,21 @@ public class MedicineService {
                 .build();
 
 
-        /**
-         * 자동 Task 추가
-         */
-        for (LocalDate date = takeStart; !date.isAfter(takeEnd); date = date.plusDays(1)) {
-            Task task = Task.builder()
-                    .day(date)
-                    .title(name)
-                    .taskType(TaskType.MEDICINE)
-                    .status(Status.YET)
-                    .startTime(LocalTime.now())
-                    .signalTime(LocalTime.now())
-                    .build();
-
-
-//            Schedule schedule;
-//            if (scheduleRepository.findByDay(date).isPresent()) {
-//                //원래 있던 스케줄 가져옴
-//                schedule = scheduleRepository.findByDay(date).get();
-//            }
-//            else {
-//                //스케줄 새로 생성
-//                schedule = Schedule.builder()
-//                        .day(date)
-//                        .build();
-//                scheduleRepository.save(schedule);
-//            }
-//            schedule.addTask(task);
-//            task.setSchedule(schedule);
-        }
+//        /**
+//         * 자동 Task 추가
+//         */
+//        for (LocalDate date = takeStart; !date.isAfter(takeEnd); date = date.plusDays(1)) {
+//            Task task = Task.builder()
+//                    .date(date)
+//                    .title(name)
+//                    .taskType(TaskType.MEDICINE)
+//                    .status(Status.YET)
+//                    .startTime(LocalTime.now())
+//                    .signalTime(LocalTime.now())
+//                    .build();
+//
+//
+//        }
         return medicineRepository.save(medicine);
     }
 
