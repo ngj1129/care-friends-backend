@@ -4,21 +4,19 @@ package hongikchildren.carefriends.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Task {
 
     @Id @GeneratedValue
     @Column(name="taskId")
     private Long id;
-
-//    @ManyToOne(fetch=FetchType.LAZY)
-//    @JoinColumn(name="scheduleId")
-//    private Schedule schedule;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="friendId")
@@ -26,12 +24,19 @@ public class Task {
 
     private Long groupId;
 
-    private LocalDate day;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     private TaskType taskType;
+
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Enumerated(EnumType.STRING)
+    private PeriodType periodType;
+
+    private int period;
+
     private LocalTime startTime;
     private LocalTime signalTime;
     private String title;
@@ -39,9 +44,12 @@ public class Task {
     private String memo;
 
     @Builder
-    public Task(Long id, LocalDate day, Long groupId, LocalTime startTime, LocalTime signalTime, String title, String location, String memo, TaskType taskType, Status status) {
+    public Task(Long id, Long groupId, Friend friend, LocalDate date, LocalTime startTime, LocalTime signalTime, String title,
+                String location, String memo, TaskType taskType, Status status, PeriodType periodType, int period) {
         this.id = id;
-        this.day = day;
+        this.groupId = groupId;
+        this.friend = friend;
+        this.date = date;
         this.startTime = startTime;
         this.title = title;
         this.location = location;
@@ -49,9 +57,12 @@ public class Task {
         this.signalTime = signalTime;
         this.taskType = taskType;
         this.status = status;
+        this.periodType = periodType;
+        this.period = period;
     }
 
-//    public void setSchedule(Schedule schedule) {
-//        this.schedule = schedule;
-//    }
+    public void setFriend(Friend friend) { this.friend = friend; }
+
+    public void removeFriend() { this.friend = null; }
+
 }

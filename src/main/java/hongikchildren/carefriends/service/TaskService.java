@@ -1,8 +1,6 @@
 package hongikchildren.carefriends.service;
 
-import hongikchildren.carefriends.domain.Status;
-import hongikchildren.carefriends.domain.Task;
-import hongikchildren.carefriends.domain.TaskType;
+import hongikchildren.carefriends.domain.*;
 import hongikchildren.carefriends.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,42 +9,36 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/*
-    @Id @GeneratedValue
-    @Column(name="taskId")
-    private Long id;
-
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="scheduleId")
-    private Schedule schedule;
-
-    private Long groupId;
-
-    @Enumerated(EnumType.STRING)
-    private TaskType taskType;
-    @Enumerated(EnumType.STRING)
-    private Status status;
-    private LocalTime startTime;
-    private LocalTime signalTime;
-    private String title;
-    private String location;
-    private String memo;
-     */
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    //private final ScheduleRepository scheduleRepository;
 
-    //Task 추가. 알림시간은 시작시간 10분전으로 설정됨.
-    //date: 선택한 날짜
+    /**
+     *
+     * @param friend
+     * @param date
+     * @param startTime
+     * @param title
+     * @param location
+     * @param memo
+     * @param periodType NONE, DAY, WEEK, MONTH, YEAR
+     * @param period
+     * @return
+     * signalTime: 시작시간 10분 전
+     */
     @Transactional
-    public Task saveTask(LocalDate day, LocalTime startTime, String title, String location, String memo, LocalDate date) {
+    public Task saveTask(Friend friend, LocalDate date, LocalTime startTime, String title, String location, String memo,
+                         PeriodType periodType, int period) {
+
+        long groupId = System.currentTimeMillis();
+
         Task task = Task.builder()
-                .day(day)
+                .groupId(groupId)
+                .friend(friend)
+                .date(date)
                 .startTime(startTime)
                 .signalTime(startTime.minusMinutes(10))
                 .title(title)
@@ -54,23 +46,46 @@ public class TaskService {
                 .memo(memo)
                 .taskType(TaskType.JOB)
                 .status(Status.YET)
+                .periodType(periodType)
+                .period(period)
                 .build();
-//
-//        Schedule schedule;
-//        if (scheduleRepository.findByDay(date).isPresent()) {
-//            //원래 있던 스케줄 가져옴
-//            schedule = scheduleRepository.findByDay(date).get();
-//        }
-//        else {
-//            //스케줄 새로 생성
-//            schedule = Schedule.builder()
-//                    .day(date)
-//                    .build();
-//            scheduleRepository.save(schedule);
-//        }
-//        schedule.addTask(task);
-//        task.setSchedule(schedule);
+
+        if (periodType != PeriodType.NONE) {
+            createCustomTask(task, periodType, period);
+        }
+
         return taskRepository.save(task);
     }
 
+    public void createCustomTask(Task task, PeriodType periodType, int period) {
+        LocalDate startDate = task.getDate();
+        for (int i = 1; i <= period; i++) {
+            LocalDate newDate = switch (periodType) {
+                case DAY -> startDate.plusDays(i);
+                case WEEK -> startDate.plusWeeks(i);
+                case MONTH -> startDate.plusMonths(i);
+                case YEAR -> startDate.plusYears(i);
+                default -> null;
+            };
+
+            if (newDate != null) {
+                Task newTask = Task.builder()
+                        .groupId(task.getGroupId())
+                        .friend(task.getFriend())
+                        .date(newDate)
+                        .startTime(task.getStartTime())
+                        .signalTime(task.getSignalTime())
+                        .title(task.getTitle())
+                        .location(task.getLocation())
+                        .memo(task.getMemo())
+                        .taskType(task.getTaskType())
+                        .status(task.getStatus())
+                        .periodType(task.getPeriodType())
+                        .period(task.getPeriod())
+                        .build();
+
+                taskRepository.save(newTask);
+            }
+        }
+    }
 }
