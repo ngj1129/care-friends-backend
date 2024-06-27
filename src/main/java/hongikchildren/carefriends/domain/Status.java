@@ -1,4 +1,5 @@
 package hongikchildren.carefriends.domain;
 
-public class Friends {
+public enum Status {
+    YET, DONE
 }

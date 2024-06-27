@@ -1,4 +1,41 @@
-package hongikchildren.carefriends.domain;
-
-public class Schedule {
-}
+//package hongikchildren.carefriends.domain;
+//
+//import jakarta.persistence.*;
+//import lombok.Builder;
+//import lombok.Getter;
+//import lombok.NoArgsConstructor;
+//import lombok.Setter;
+//
+//import java.time.LocalDate;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//@Entity
+//@Getter @Setter
+//@NoArgsConstructor
+//public class Schedule {
+//    @Id @GeneratedValue
+//    @Column(name = "scheduleId")
+//    private Long id;
+//
+//    private LocalDate day;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "friendsId")
+//    private Friends friends;
+//
+//    @OneToMany(mappedBy = "schedule")
+//    private List<Task> tasks = new ArrayList<>();
+//
+//    @Builder
+//    protected Schedule(Long id, LocalDate day, Friends friends) {
+//        this.id = id;
+//        this.day = day;
+//        this.friends = friends;
+//    }
+//
+//    //Task 추가 메서드
+//    public void addTask(Task task) {
+//        this.tasks.add(task);
+//    }
+//}
