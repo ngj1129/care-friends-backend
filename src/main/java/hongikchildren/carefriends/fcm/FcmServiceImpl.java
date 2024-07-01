@@ -3,16 +3,24 @@ package hongikchildren.carefriends.fcm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import hongikchildren.carefriends.repository.FriendRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class FcmServiceImpl implements FcmService {
+
+    private final FriendRepository friendRepository;
+
     /**
      * 푸시 메시지 처리를 수행하는 비즈니스 로직
      *
@@ -62,11 +70,10 @@ public class FcmServiceImpl implements FcmService {
      * @return String
      */
     private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
-
         ObjectMapper om = new ObjectMapper();
         FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
                 .message(FcmMessageDto.Message.builder()
-                        .token(fcmSendDto.getToken())
+                        .token(friendRepository.findById(fcmSendDto.getId()).get().getToken()) //null 검사 안함.
                         .notification(FcmMessageDto.Notification.builder()
                                 .title(fcmSendDto.getTitle())
                                 .body(fcmSendDto.getBody())

@@ -21,6 +21,8 @@ public class Friend {
     @Column(name = "friendId")
     private UUID id;
 
+    private String token;
+
     private String name;
 
     private String phoneNumber;

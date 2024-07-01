@@ -22,6 +22,8 @@ public class Caregiver {
     @Column(name = "caregiverId")
     private UUID id;
 
+    private String token;
+
     private String name;
 
     private String phoneNumber;
