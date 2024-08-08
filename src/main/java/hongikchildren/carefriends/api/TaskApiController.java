@@ -4,15 +4,14 @@ import hongikchildren.carefriends.domain.*;
 import hongikchildren.carefriends.service.FriendService;
 import hongikchildren.carefriends.service.TaskService;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -34,6 +33,24 @@ public class TaskApiController {
                 request.getLocation(), request.getMemo(), request.getPeriodType(), request.getPeriod());
         return new taskResponse(task.getGroupId());
 
+    }
+
+    @GetMapping
+    public List<perTaskResponse> getTask(@RequestBody taskRequest request) {
+        List<Task> task = taskService.getTask(request.getDate());
+        List<perTaskResponse> list = task.stream().map(
+                v -> perTaskResponse.builder()
+                        .location(v.getLocation())
+                        .memo(v.getMemo())
+                        .signalTime(v.getSignalTime())
+                        .startTime(v.getStartTime())
+                        .status(v.getStatus())
+                        .taskType(v.getTaskType())
+                        .title(v.getTitle())
+                        .build()
+        ).toList();
+
+        return list;
     }
 
 //    public Task saveTask(Friend friend, LocalDate date, LocalTime startTime, String title, String location, String memo,
@@ -68,6 +85,29 @@ public class TaskApiController {
 
         public taskResponse(long id) {
             this.id = id;
+        }
+    }
+
+    @Data
+    @Builder
+    static class perTaskResponse {
+        private String memo;
+        private LocalTime startTime;
+        private LocalTime signalTime;
+        private String location;
+        private String title;
+        private Status status;
+        private TaskType taskType;
+
+        @Builder
+        public perTaskResponse(String memo, LocalTime startTime, LocalTime signalTime, String location, String title, Status status, TaskType taskType) {
+            this.memo = memo;
+            this.startTime = startTime;
+            this.signalTime = signalTime;
+            this.location = location;
+            this.title = title;
+            this.status = status;
+            this.taskType = taskType;
         }
     }
 }

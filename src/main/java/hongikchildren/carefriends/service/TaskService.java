@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -87,5 +88,11 @@ public class TaskService {
                 taskRepository.save(newTask);
             }
         }
+    }
+
+    public List<Task> getTask(LocalDate currentDate) {
+        List<Task> result = taskRepository.findByDate(currentDate);
+
+        return result;
     }
 }
