@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,7 @@ public class TaskApiController {
      * 일정 추가
      */
     @PostMapping
-    public taskResponse addTask(taskRequest request) {
+    public taskResponse addTask(@RequestBody taskRequest request) {
 
         Friend friend = friendService.getFriendById(request.getFriendId()).orElseThrow();
         Task task = taskService.saveTask(friend, request.getDate(), request.getStartTime(), request.getTitle(),
