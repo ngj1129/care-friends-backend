@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -36,8 +37,9 @@ public class TaskApiController {
     }
 
     @GetMapping
-    public List<perTaskResponse> getTask(@RequestBody taskRequest request) {
-        List<Task> task = taskService.getTask(request.getDate());
+    public List<perTaskResponse> getTask(@RequestParam LocalDate date) {
+        List<Task> task = taskService.getTask(date);
+        System.out.println(task);
         List<perTaskResponse> list = task.stream().map(
                 v -> perTaskResponse.builder()
                         .location(v.getLocation())
@@ -47,6 +49,7 @@ public class TaskApiController {
                         .status(v.getStatus())
                         .taskType(v.getTaskType())
                         .title(v.getTitle())
+                        .date(date)
                         .build()
         ).toList();
 
@@ -98,9 +101,10 @@ public class TaskApiController {
         private String title;
         private Status status;
         private TaskType taskType;
+        private LocalDate date;
 
         @Builder
-        public perTaskResponse(String memo, LocalTime startTime, LocalTime signalTime, String location, String title, Status status, TaskType taskType) {
+        public perTaskResponse(String memo, LocalTime startTime, LocalTime signalTime, String location, String title, Status status, TaskType taskType, LocalDate date) {
             this.memo = memo;
             this.startTime = startTime;
             this.signalTime = signalTime;
@@ -108,6 +112,7 @@ public class TaskApiController {
             this.title = title;
             this.status = status;
             this.taskType = taskType;
+            this.date = date;
         }
     }
 }
