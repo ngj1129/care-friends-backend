@@ -56,6 +56,26 @@ public class TaskApiController {
         return list;
     }
 
+    @GetMapping("/all")
+    public List<perTaskResponse> getAllTask() {
+        List<Task> result = taskService.getAllTask();
+
+        List<perTaskResponse> list = result.stream().map(
+                v -> perTaskResponse.builder()
+                        .location(v.getLocation())
+                        .memo(v.getMemo())
+                        .signalTime(v.getSignalTime())
+                        .startTime(v.getStartTime())
+                        .status(v.getStatus())
+                        .taskType(v.getTaskType())
+                        .title(v.getTitle())
+                        .date(v.getDate())
+                        .build()
+        ).toList();
+
+        return list;
+    }
+
 //    public Task saveTask(Friend friend, LocalDate date, LocalTime startTime, String title, String location, String memo,
 //                         PeriodType periodType, int period) {
     @Data

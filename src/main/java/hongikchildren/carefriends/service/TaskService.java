@@ -92,7 +92,11 @@ public class TaskService {
 
     public List<Task> getTask(LocalDate currentDate) {
         List<Task> result = taskRepository.findByDate(currentDate);
+        return result;
+    }
 
+    public List<Task> getAllTask(){
+        List<Task> result = taskRepository.findAll();
         return result;
     }
 }
