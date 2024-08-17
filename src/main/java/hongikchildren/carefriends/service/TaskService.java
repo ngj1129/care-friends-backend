@@ -11,7 +11,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 @RequiredArgsConstructor
 public class TaskService {
 
@@ -98,5 +98,13 @@ public class TaskService {
     public List<Task> getAllTask(){
         List<Task> result = taskRepository.findAll();
         return result;
+    }
+
+    public int updateTask(Long id, String title, String memo){
+        return taskRepository.updateTask(id, title, memo);
+    }
+
+    public void deleteTask(Long id) {
+        taskRepository.deleteById(id);
     }
 }
