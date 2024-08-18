@@ -24,15 +24,15 @@ public class FriendApiController {
 
     // 친구 추가 요청
     @PostMapping
-    public friendResponse addFriend(@RequestBody friendRequest request){
+    public AddFriendResponse addFriend(@RequestBody AddFriendRequest request){
         FriendRequest friendRequest = friendRequestService.sendFriendRequest(request.getCaregiver(), request.getFriendId());
         friendRequestService.acceptFriendRequest(friendRequest.getId());
 
-        return new friendResponse(request.getFriendId());
+        return new AddFriendResponse(request.getFriendId());
     }
 
     @GetMapping
-    public FriendsResponse getFriends(UUID caregiverId, UUID friendId){
+    public GetFriendsResponse getFriends(UUID caregiverId, UUID friendId){
         List<UUID> caregiversFriendsIds = caregiverRepository.findById(caregiverId)
                 .orElseThrow(() -> new RuntimeException("Caregiver not found"))
                 .getFriends().stream()
@@ -43,38 +43,37 @@ public class FriendApiController {
                 .orElseThrow(() -> new RuntimeException("Friend not found"))
                 .getCaregiver().getId();
 
-        return new FriendsResponse(caregiversFriendsIds, friendCaregiverId);
+        return new GetFriendsResponse(caregiversFriendsIds, friendCaregiverId);
     }
 
     @Data
-    static class friendRequest{
+    static class AddFriendRequest{
         private UUID friendId;
         private Caregiver caregiver;
 
-        public friendRequest() {}
+        public AddFriendRequest() {}
 
-
-        public friendRequest(UUID friendId, Caregiver caregiver){
+        public AddFriendRequest(UUID friendId, Caregiver caregiver){
             this.friendId = friendId;
             this.caregiver = caregiver;
         }
     }
 
     @Data
-    static class friendResponse{
+    static class AddFriendResponse{
         private UUID friendId;
 
-        public friendResponse(UUID friendId){
+        public AddFriendResponse(UUID friendId){
             this.friendId = friendId;
         }
     }
 
     @Data
-    static class FriendsResponse {
+    static class GetFriendsResponse {
         private List<UUID> caregiverFriendsIds;
         private UUID friendCaregiverId;
 
-        public FriendsResponse(List<UUID> caregiverFriendsIds, UUID friendCaregiverId) {
+        public GetFriendsResponse(List<UUID> caregiverFriendsIds, UUID friendCaregiverId) {
             this.caregiverFriendsIds = caregiverFriendsIds;
             this.friendCaregiverId = friendCaregiverId;
         }
