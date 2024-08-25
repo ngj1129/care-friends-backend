@@ -10,6 +10,7 @@ import hongikchildren.carefriends.service.FriendRequestService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,21 +35,46 @@ public class FriendApiController {
         return new AddFriendResponse(request.getFriendId());
     }
 
-    @GetMapping
-    public GetFriendsResponse getFriends(UUID caregiverId, UUID friendId){
-        List<UUID> caregiversFriendsIds = caregiverRepository.findById(caregiverId)
-                .orElseThrow(() -> new RuntimeException("Caregiver not found"))
-                .getFriends().stream()
-                .map(Friend::getId)
-                .collect(Collectors.toList());
+//    @GetMapping("/getFriends/{caregiverId}/{friendId}")
+//    public GetFriendsResponse getFriends(UUID caregiverId, UUID friendId){
+//        // 특정 caregiver가 관리하는 firned들의 id 조회
+//        List<UUID> caregiversFriendsIds = caregiverRepository.findById(caregiverId)
+//                .orElseThrow(() -> new RuntimeException("Caregiver not found"))
+//                .getFriends().stream()
+//                .map(Friend::getId)
+//                .collect(Collectors.toList());
+//
+//        // 특정 friend를 관리하는 caregiver id를 조회
+//        UUID friendCaregiverId = friendRepository.findById(friendId)
+//                .orElseThrow(() -> new RuntimeException("Friend not found"))
+//                .getCaregiver().getId();
+//
+//        return new GetFriendsResponse(caregiversFriendsIds, friendCaregiverId);
+//    }
 
-        UUID friendCaregiverId = friendRepository.findById(friendId)
-                .orElseThrow(() -> new RuntimeException("Friend not found"))
-                .getCaregiver().getId();
+    // 보호자가 관리하는 모든 프렌즈 조회
 
-        return new GetFriendsResponse(caregiversFriendsIds, friendCaregiverId);
+    // 프렌즈의 보호자 조회
+
+    // 친구 요청 수락 api
+    @PostMapping("/friendRequest/{requestId}/accept")
+    public ResponseEntity<Void> acceptFriend(@PathVariable Long requestId){
+        friendRequestService.acceptFriendRequest(requestId);
+        return ResponseEntity.ok().build();
     }
 
+    // 친구 요청 거절 api
+    @PostMapping("/friendRequest/{requestId}/reject")
+    public ResponseEntity<Void> rejectFriend(@PathVariable Long requestId){
+        friendRequestService.rejectFriendRequest(requestId);
+        return ResponseEntity.ok().build();
+    }
+
+    // 보호자가 관리하는 친구 삭제 api
+
+    // 보호자가 보낸 친구 요청 취소
+
+    // 보호자가 보낸 친구 요청 상태 조회
 
     // 프렌즈가 대기 중인 친구 요청 조회
     @GetMapping("/pendingRequests/{friendId}")
