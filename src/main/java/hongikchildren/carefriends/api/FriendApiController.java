@@ -1,5 +1,6 @@
 package hongikchildren.carefriends.api;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import hongikchildren.carefriends.domain.Caregiver;
 import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.FriendRequest;
@@ -9,7 +10,6 @@ import hongikchildren.carefriends.repository.FriendRequestRepository;
 import hongikchildren.carefriends.service.FriendRequestService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 public class FriendApiController {
     private final FriendRequestService friendRequestService;
     private final CaregiverRepository caregiverRepository;
-    private final FriendRepository friendRepository;
-    private final FriendRequestRepository friendRequestRepository;
 
     // 친구 추가 요청
     @PostMapping
@@ -52,20 +50,29 @@ public class FriendApiController {
 //        return new GetFriendsResponse(caregiversFriendsIds, friendCaregiverId);
 //    }
 
-    // 보호자가 관리하는 모든 프렌즈 조회
+    // 보호자가 관리하는 모든 프렌즈 Id 조회
+    @GetMapping("/getFriends/{caregiverId}")
+    public List<UUID> getFriends(@PathVariable UUID caregiverId){
+        return caregiverRepository.findById(caregiverId)
+                .orElseThrow(() -> new NotFoundException("caregiver not found"))
+                .getFriends().stream()
+                .map(Friend::getId)
+                .collect(Collectors.toList());
+    }
+
 
     // 프렌즈의 보호자 조회
 
     // 친구 요청 수락 api
-    @PostMapping("/friendRequest/{requestId}/accept")
-    public ResponseEntity<Void> acceptFriend(@PathVariable Long requestId){
+    @PostMapping("/{requestId}/accept")
+    public ResponseEntity<Void> acceptFriendRequest(@PathVariable Long requestId){
         friendRequestService.acceptFriendRequest(requestId);
         return ResponseEntity.ok().build();
     }
 
     // 친구 요청 거절 api
-    @PostMapping("/friendRequest/{requestId}/reject")
-    public ResponseEntity<Void> rejectFriend(@PathVariable Long requestId){
+    @PostMapping("/{requestId}/reject")
+    public ResponseEntity<Void> rejectFriendRequest(@PathVariable Long requestId){
         friendRequestService.rejectFriendRequest(requestId);
         return ResponseEntity.ok().build();
     }
