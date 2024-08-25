@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class FriendApiController {
     private final FriendRequestService friendRequestService;
     private final CaregiverRepository caregiverRepository;
+    private final FriendRepository friendRepository;
 
     // 친구 추가 요청
     @PostMapping
@@ -60,8 +61,13 @@ public class FriendApiController {
                 .collect(Collectors.toList());
     }
 
-
-    // 프렌즈의 보호자 조회
+    // 프렌즈의 보호자 id 조회
+    @GetMapping("/getCaregiver/{friendId}")
+    public UUID getCaregiver(@PathVariable UUID friendId){
+        return friendRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("프렌즈 찾을 수 없음"))
+                .getCaregiver().getId();
+    }
 
     // 친구 요청 수락 api
     @PostMapping("/{requestId}/accept")
@@ -114,16 +120,16 @@ public class FriendApiController {
         }
     }
 
-    @Data
-    static class GetFriendsResponse {
-        private List<UUID> caregiverFriendsIds;
-        private UUID friendCaregiverId;
-
-        public GetFriendsResponse(List<UUID> caregiverFriendsIds, UUID friendCaregiverId) {
-            this.caregiverFriendsIds = caregiverFriendsIds;
-            this.friendCaregiverId = friendCaregiverId;
-        }
-    }
+//    @Data
+//    static class GetFriendsResponse {
+//        private List<UUID> caregiverFriendsIds;
+//        private UUID friendCaregiverId;
+//
+//        public GetFriendsResponse(List<UUID> caregiverFriendsIds, UUID friendCaregiverId) {
+//            this.caregiverFriendsIds = caregiverFriendsIds;
+//            this.friendCaregiverId = friendCaregiverId;
+//        }
+//    }
 
     @Data
     static class FriendRequestResponse {
