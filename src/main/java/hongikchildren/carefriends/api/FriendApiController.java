@@ -1,13 +1,16 @@
 package hongikchildren.carefriends.api;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import hongikchildren.carefriends.domain.Caregiver;
 import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.FriendRequest;
 import hongikchildren.carefriends.repository.CaregiverRepository;
 import hongikchildren.carefriends.repository.FriendRepository;
+import hongikchildren.carefriends.repository.FriendRequestRepository;
 import hongikchildren.carefriends.service.FriendRequestService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,24 +29,73 @@ public class FriendApiController {
     @PostMapping
     public AddFriendResponse addFriend(@RequestBody AddFriendRequest request){
         FriendRequest friendRequest = friendRequestService.sendFriendRequest(request.getCaregiver(), request.getFriendId());
-        friendRequestService.acceptFriendRequest(friendRequest.getId());
+//        friendRequestService.acceptFriendRequest(friendRequest.getId());
 
         return new AddFriendResponse(request.getFriendId());
     }
 
-    @GetMapping
-    public GetFriendsResponse getFriends(UUID caregiverId, UUID friendId){
-        List<UUID> caregiversFriendsIds = caregiverRepository.findById(caregiverId)
-                .orElseThrow(() -> new RuntimeException("Caregiver not found"))
+//    @GetMapping("/getFriends/{caregiverId}/{friendId}")
+//    public GetFriendsResponse getFriends(UUID caregiverId, UUID friendId){
+//        // 특정 caregiver가 관리하는 firned들의 id 조회
+//        List<UUID> caregiversFriendsIds = caregiverRepository.findById(caregiverId)
+//                .orElseThrow(() -> new RuntimeException("Caregiver not found"))
+//                .getFriends().stream()
+//                .map(Friend::getId)
+//                .collect(Collectors.toList());
+//
+//        // 특정 friend를 관리하는 caregiver id를 조회
+//        UUID friendCaregiverId = friendRepository.findById(friendId)
+//                .orElseThrow(() -> new RuntimeException("Friend not found"))
+//                .getCaregiver().getId();
+//
+//        return new GetFriendsResponse(caregiversFriendsIds, friendCaregiverId);
+//    }
+
+    // 보호자가 관리하는 모든 프렌즈 Id 조회
+    @GetMapping("/getFriends/{caregiverId}")
+    public List<UUID> getFriends(@PathVariable UUID caregiverId){
+        return caregiverRepository.findById(caregiverId)
+                .orElseThrow(() -> new NotFoundException("caregiver not found"))
                 .getFriends().stream()
                 .map(Friend::getId)
                 .collect(Collectors.toList());
+    }
 
-        UUID friendCaregiverId = friendRepository.findById(friendId)
-                .orElseThrow(() -> new RuntimeException("Friend not found"))
+    // 프렌즈의 보호자 id 조회
+    @GetMapping("/getCaregiver/{friendId}")
+    public UUID getCaregiver(@PathVariable UUID friendId){
+        return friendRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("프렌즈 찾을 수 없음"))
                 .getCaregiver().getId();
+    }
 
-        return new GetFriendsResponse(caregiversFriendsIds, friendCaregiverId);
+    // 친구 요청 수락 api
+    @PostMapping("/{requestId}/accept")
+    public ResponseEntity<Void> acceptFriendRequest(@PathVariable Long requestId){
+        friendRequestService.acceptFriendRequest(requestId);
+        return ResponseEntity.ok().build();
+    }
+
+    // 친구 요청 거절 api
+    @PostMapping("/{requestId}/reject")
+    public ResponseEntity<Void> rejectFriendRequest(@PathVariable Long requestId){
+        friendRequestService.rejectFriendRequest(requestId);
+        return ResponseEntity.ok().build();
+    }
+
+    // 보호자가 관리하는 친구 삭제 api
+
+    // 보호자가 보낸 친구 요청 취소
+
+    // 보호자가 보낸 친구 요청 상태 조회
+
+    // 프렌즈가 대기 중인 친구 요청 조회
+    @GetMapping("/pendingRequests/{friendId}")
+    public List<FriendRequestResponse> getPendingRequests(@PathVariable UUID friendId){
+        List<FriendRequest> pendingRequests = friendRequestService.getPendingRequest(friendId);
+        return pendingRequests.stream()
+                .map(req -> new FriendRequestResponse(req.getId(), req.getCaregiver().getId(), req.getCaregiver().getName(), req.getStatus()))
+                .collect(Collectors.toList());
     }
 
     @Data
@@ -68,15 +120,29 @@ public class FriendApiController {
         }
     }
 
-    @Data
-    static class GetFriendsResponse {
-        private List<UUID> caregiverFriendsIds;
-        private UUID friendCaregiverId;
+//    @Data
+//    static class GetFriendsResponse {
+//        private List<UUID> caregiverFriendsIds;
+//        private UUID friendCaregiverId;
+//
+//        public GetFriendsResponse(List<UUID> caregiverFriendsIds, UUID friendCaregiverId) {
+//            this.caregiverFriendsIds = caregiverFriendsIds;
+//            this.friendCaregiverId = friendCaregiverId;
+//        }
+//    }
 
-        public GetFriendsResponse(List<UUID> caregiverFriendsIds, UUID friendCaregiverId) {
-            this.caregiverFriendsIds = caregiverFriendsIds;
-            this.friendCaregiverId = friendCaregiverId;
+    @Data
+    static class FriendRequestResponse {
+        private Long requestId;
+        private UUID caregiverId;
+        private String caregiverName;
+        private String status;
+
+        public FriendRequestResponse(Long requestId, UUID caregiverId, String caregiverName, String status) {
+            this.requestId = requestId;
+            this.caregiverName = caregiverName;
+            this.caregiverId = caregiverId;
+            this.status = status;
         }
     }
-
 }
