@@ -6,12 +6,16 @@ import hongikchildren.carefriends.service.TaskService;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.support.RequestPartServletServerHttpRequest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -36,10 +40,12 @@ public class TaskApiController {
     }
 
     @GetMapping
-    public List<perTaskResponse> getTask(@RequestBody taskRequest request) {
-        List<Task> task = taskService.getTask(request.getDate());
+    public List<perTaskResponse> getTask(@RequestParam LocalDate date) {
+        List<Task> task = taskService.getTask(date);
+        System.out.println(task);
         List<perTaskResponse> list = task.stream().map(
                 v -> perTaskResponse.builder()
+                        .id(v.getId())
                         .location(v.getLocation())
                         .memo(v.getMemo())
                         .signalTime(v.getSignalTime())
@@ -47,14 +53,61 @@ public class TaskApiController {
                         .status(v.getStatus())
                         .taskType(v.getTaskType())
                         .title(v.getTitle())
+                        .date(date)
                         .build()
         ).toList();
 
         return list;
     }
 
+    @GetMapping("/all")
+    public List<perTaskResponse> getAllTask() {
+        List<Task> result = taskService.getAllTask();
+
+        List<perTaskResponse> list = result.stream().map(
+                v -> perTaskResponse.builder()
+                        .id(v.getId())
+                        .location(v.getLocation())
+                        .memo(v.getMemo())
+                        .signalTime(v.getSignalTime())
+                        .startTime(v.getStartTime())
+                        .status(v.getStatus())
+                        .taskType(v.getTaskType())
+                        .title(v.getTitle())
+                        .date(v.getDate())
+                        .build()
+        ).toList();
+
+        return list;
+    }
+
+    @PostMapping("/update")
+    public void updateTask(@RequestBody TaskUpdateRequest taskUpdateRequest) {
+        taskService.updateTask(taskUpdateRequest.getId(), taskUpdateRequest.getTitle(), taskUpdateRequest.getMemo());
+    }
+
+    @DeleteMapping
+    public void deleteTask(@RequestBody Map<String, Long> payload) {
+        System.out.println(payload.get("id"));
+        taskService.deleteTask(payload.get("id"));
+    }
+
 //    public Task saveTask(Friend friend, LocalDate date, LocalTime startTime, String title, String location, String memo,
 //                         PeriodType periodType, int period) {
+
+    @Data
+    @Getter
+    static class TaskUpdateRequest {
+        private Long id;
+        private String title;
+        private String memo;
+        public TaskUpdateRequest(Long id, String title, String memo) {
+            this.id = id;
+            this.title = title;
+            this.memo = memo;
+        }
+    }
+
     @Data
     static class taskRequest {
         private UUID friendId;
@@ -91,6 +144,7 @@ public class TaskApiController {
     @Data
     @Builder
     static class perTaskResponse {
+        private Long id;
         private String memo;
         private LocalTime startTime;
         private LocalTime signalTime;
@@ -98,9 +152,11 @@ public class TaskApiController {
         private String title;
         private Status status;
         private TaskType taskType;
+        private LocalDate date;
 
         @Builder
-        public perTaskResponse(String memo, LocalTime startTime, LocalTime signalTime, String location, String title, Status status, TaskType taskType) {
+        public perTaskResponse(Long id, String memo, LocalTime startTime, LocalTime signalTime, String location, String title, Status status, TaskType taskType, LocalDate date) {
+            this.id = id;
             this.memo = memo;
             this.startTime = startTime;
             this.signalTime = signalTime;
@@ -108,6 +164,7 @@ public class TaskApiController {
             this.title = title;
             this.status = status;
             this.taskType = taskType;
+            this.date = date;
         }
     }
 }

@@ -26,7 +26,7 @@ public class FriendRequestService {
 
 
     // 친구 요청 보내기
-    // 핸드폰 번호, 닉네임, uuid 등등 어떤 걸로 친추 보낼 건지 생각해보고 인자 수정하기
+    // 프렌즈의 UUID로 친구 요청 보냄
     @Transactional
     public FriendRequest sendFriendRequest(Caregiver caregiver, UUID friendUUID){
 
