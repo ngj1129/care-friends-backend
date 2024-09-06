@@ -13,4 +13,6 @@ public interface FriendRepository extends JpaRepository<Friend, UUID> {
     List<Friend> findByName(String name);
 
     Optional<Friend> findById(UUID friendId);
+
+    Optional<Friend> findByEmail(String email);
 }

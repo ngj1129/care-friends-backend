@@ -11,4 +11,6 @@ public interface CaregiverRepository extends JpaRepository<Caregiver, UUID> {
     List<Caregiver> findByName(String name);
 
     void deleteById(UUID id);
+
+    Optional<Caregiver> findByEmail(String email);
 }
