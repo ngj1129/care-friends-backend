@@ -30,6 +30,8 @@ public class Caregiver {
 
     private String phoneNumber;
 
+    private String email;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -43,10 +45,11 @@ public class Caregiver {
     private List<FriendRequest> friendRequests = new ArrayList<>();
 
     @Builder
-    protected Caregiver(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate) {
+    protected Caregiver(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.gender = gender;
         this.birthDate = birthDate;
     }

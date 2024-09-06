@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -33,19 +34,19 @@ public class KakaoService {
         String tokenUrl = KAUTH_TOKEN_URL_HOST + "/oauth/token";
 
         // 요청 파라미터 설정
-        Map<String, String> params = new HashMap<>();
-        params.put("grant_type", "authorization_code");
-        params.put("client_id", clientId);
-        params.put("code", code);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", clientId); // 카카오 클라이언트 ID
+        params.add("code", code);
 
         // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        // 요청 바디 및 헤더 설정
-        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(params, headers);
+        // 요청 엔티티 생성
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
 
-        // RestTemplate을 사용하여 POST 요청
+        // 카카오 서버에 POST 요청 보내기
         ResponseEntity<KakaoTokenResponseDto> responseEntity = restTemplate.exchange(
                 tokenUrl,
                 HttpMethod.POST,
@@ -53,18 +54,53 @@ public class KakaoService {
                 KakaoTokenResponseDto.class
         );
 
-        KakaoTokenResponseDto kakaoTokenResponseDto = responseEntity.getBody();
-
-        if (kakaoTokenResponseDto == null) {
-            throw new RuntimeException("Failed to retrieve access token from Kakao");
+        // 응답에서 액세스 토큰 추출
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            KakaoTokenResponseDto responseBody = responseEntity.getBody();
+            if (responseBody != null) {
+                return responseBody.getAccessToken();
+            }
         }
 
-        log.info(" [Kakao Service] Access Token ------> {}", kakaoTokenResponseDto.getAccessToken());
-        log.info(" [Kakao Service] Refresh Token ------> {}", kakaoTokenResponseDto.getRefreshToken());
-        log.info(" [Kakao Service] Id Token ------> {}", kakaoTokenResponseDto.getIdToken());
-        log.info(" [Kakao Service] Scope ------> {}", kakaoTokenResponseDto.getScope());
+        throw new RuntimeException("Failed to retrieve access token from Kakao");
+    }
 
-        return kakaoTokenResponseDto.getAccessToken();
+    public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
+        String url = KAUTH_USER_URL_HOST + "/v2/user/me";
+
+        // HTTP 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<KakaoUserInfoResponseDto> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    KakaoUserInfoResponseDto.class
+            );
+
+            KakaoUserInfoResponseDto userInfo = response.getBody();
+
+            log.info("[ Kakao Service ] Auth ID ---> {}", userInfo.getId());
+            log.info("[ Kakao Service ] NickName ---> {}", userInfo.getKakaoAccount().getProfile().getNickName());
+            log.info("[ Kakao Service ] ProfileImageUrl ---> {}", userInfo.getKakaoAccount().getProfile().getProfileImageUrl());
+
+            return userInfo;
+
+        } catch (HttpClientErrorException e) {
+            log.error("4xx Error while fetching user info: {}", e.getMessage());
+            throw new RuntimeException("Invalid Parameter");
+        } catch (HttpServerErrorException e) {
+            log.error("5xx Error while fetching user info: {}", e.getMessage());
+            throw new RuntimeException("Internal Server Error");
+        } catch (Exception e) {
+            log.error("Error while fetching user info: {}", e.getMessage());
+            throw new RuntimeException("An error occurred while fetching user info");
+        }
     }
 }
 

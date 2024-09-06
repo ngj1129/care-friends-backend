@@ -29,6 +29,8 @@ public class Friend {
 
     private String phoneNumber;
 
+    private String email;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -49,10 +51,11 @@ public class Friend {
     private List<FriendRequest> friendRequests = new ArrayList<>();
 
     @Builder
-    public Friend(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {
+    public Friend(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.gender = gender;
         this.birthDate = birthDate;
         this.breakfast = breakfast;

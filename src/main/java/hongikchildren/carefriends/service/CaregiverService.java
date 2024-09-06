@@ -23,10 +23,11 @@ public class CaregiverService {
 
     // Caregiver 저장
     @Transactional
-    public Caregiver saveCaregiver(String name, String phoneNum, Gender gender, LocalDate birthDate){
+    public Caregiver saveCaregiver(String name, String phoneNum, String email, Gender gender, LocalDate birthDate){
         Caregiver caregiver = Caregiver.builder()
                 .name(name)
                 .phoneNumber(phoneNum)
+                .email(email)
                 .gender(gender)
                 .birthDate(birthDate)
                 .build();
