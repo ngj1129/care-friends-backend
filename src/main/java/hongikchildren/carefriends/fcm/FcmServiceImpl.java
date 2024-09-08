@@ -53,7 +53,7 @@ public class FcmServiceImpl implements FcmService {
      * @return Bearer token
      */
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/carefriends-1e6d8-firebase-adminsdk-711ao-fe8d4dfe39.json";
+        String firebaseConfigPath = "firebase/carefriends-1e6d8-firebase-adminsdk-711ao-6a5cb05015.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
@@ -73,7 +73,7 @@ public class FcmServiceImpl implements FcmService {
         ObjectMapper om = new ObjectMapper();
         FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
                 .message(FcmMessageDto.Message.builder()
-                        .token(friendRepository.findById(fcmSendDto.getId()).get().getToken()) //null 검사 안함.
+                        .token(friendRepository.findById(fcmSendDto.getId()).get().getFcmToken()) //null 검사 안함.
                         .notification(FcmMessageDto.Notification.builder()
                                 .title(fcmSendDto.getTitle())
                                 .body(fcmSendDto.getBody())

@@ -24,7 +24,7 @@ public class Caregiver {
     @Column(name = "caregiverId")
     private UUID id;
 
-    private String token;
+    private String fcmToken;
 
     private String name;
 
@@ -45,13 +45,14 @@ public class Caregiver {
     private List<FriendRequest> friendRequests = new ArrayList<>();
 
     @Builder
-    protected Caregiver(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate) {
+    protected Caregiver(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, String fcmToken) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.fcmToken = fcmToken;
     }
 
 
