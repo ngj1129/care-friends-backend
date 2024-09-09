@@ -62,13 +62,12 @@
                         .id(friend.getId())
                         .title("친구 요청")
                         .body("보호자로부터 친구 요청이 도착했습니다.")
+                        .receiverType("Friend")
                         .build();
 
-//                fcmServiceImpl.sendMessageTo(fcmSendDto);
                 try {
                     fcmServiceImpl.sendMessageTo(fcmSendDto);
                 } catch (IOException e) {
-                    // 예외 처리 로직 (로그 남기기 등)
                     e.printStackTrace();
                     throw new RuntimeException("FCM 메시지 전송에 실패했습니다.", e);
                 }
@@ -96,7 +95,15 @@
                     .id(caregiver.getId())
                     .title("친구 요청 수락")
                     .body("친구 요청이 수락되었습니다.")
+                    .receiverType("Caregiver")
                     .build();
+
+            try {
+                fcmServiceImpl.sendMessageTo(fcmSendDto);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("FCM 메시지 전송에 실패했습니다.", e);
+            }
 
             friendRequestRepository.save(friendRequest);
             caregiverRepository.save(caregiver);
