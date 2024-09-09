@@ -38,9 +38,7 @@ out/
 
 src/main/resources/application.properties
 build.gradle
-_carefriends-1e6d8-firebase-adminsdk-711ao-fe8d4dfe39.json
-_experiment-77bf3-firebase-adminsdk-mt0k3-79cb351c0d.json
-carefriends-1e6d8-firebase-adminsdk-711ao-6a5cb05015.json
+carefriends-ede42-507320a7d7a1.json
 
 Dockerfile
 docker-compose.yml
