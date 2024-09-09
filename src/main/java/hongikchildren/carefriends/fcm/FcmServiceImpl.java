@@ -41,7 +41,7 @@ public class FcmServiceImpl implements FcmService {
 
         HttpEntity entity = new HttpEntity<>(message, headers);
 
-        String API_URL = "https://fcm.googleapis.com/v1/projects/carefriends-ede42/messages:send";
+        String API_URL = "https://fcm.googleapis.com/v1/projects/carefriends-121e6/messages:send";
         ResponseEntity response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
         System.out.println(response.getStatusCode());
@@ -55,7 +55,7 @@ public class FcmServiceImpl implements FcmService {
      * @return Bearer token
      */
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/carefriends-ede42-507320a7d7a1.json";
+        String firebaseConfigPath = "firebase/carefriends-121e6-firebase-adminsdk-v1geu-f14d7de41a.json";
 
 
         GoogleCredentials googleCredentials = GoogleCredentials
