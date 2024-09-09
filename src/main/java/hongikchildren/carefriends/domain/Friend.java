@@ -23,7 +23,7 @@ public class Friend {
     @Column(name = "friendId")
     private UUID id;
 
-    private String token;
+    private String fcmToken;
 
     private String name;
 
@@ -51,7 +51,7 @@ public class Friend {
     private List<FriendRequest> friendRequests = new ArrayList<>();
 
     @Builder
-    public Friend(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner) {
+    public Friend(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner, String fcmToken) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -61,6 +61,7 @@ public class Friend {
         this.breakfast = breakfast;
         this.lunch = lunch;
         this.dinner = dinner;
+        this.fcmToken = fcmToken;
     }
 
     // Caregiver 설정 메서드
