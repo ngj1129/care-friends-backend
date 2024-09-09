@@ -44,6 +44,12 @@
                     throw new RuntimeException("이미 보호자가 등록된 프렌드입니다.");
                 }
 
+                // 이미 친구 요청을 보낸 상태인지 확인
+                Optional<FriendRequest> existingRequest = friendRequestRepository.findByCaregiverAndFriendAndStatus(caregiver, friend, "pending");
+                if (existingRequest.isPresent()){
+                    throw new RuntimeException("이미 프렌즈에게 친구 요청을 보냈습니다.");
+                }
+
                 FriendRequest friendRequest = FriendRequest.builder()
                         .friend(friend)
                         .caregiver(caregiver)
