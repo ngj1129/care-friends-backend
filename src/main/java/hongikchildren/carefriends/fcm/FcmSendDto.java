@@ -12,12 +12,14 @@ public class FcmSendDto {
     private UUID id;
     private String title;
     private String body;
+    private String receiverType; // caregiver, friend로 구분
 
     @Builder
-    public FcmSendDto(UUID id, String title, String body) {
+    public FcmSendDto(UUID id, String title, String body, String receiverType) {
         //this.token = token;
         this.id = id;
         this.title = title;
         this.body = body;
+        this.receiverType = receiverType;
     }
 }

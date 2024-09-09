@@ -21,13 +21,14 @@ public class FriendService {
 
     // Friend 저장
     @Transactional
-    public Friend saveFriend(String name, String phoneNumber, String email, Gender gender, LocalDate birthDate) {
+    public Friend saveFriend(String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, String fcmToken) {
         Friend friend = Friend.builder()
                 .name(name)
                 .phoneNumber(phoneNumber)
                 .email(email)
                 .gender(gender)
                 .birthDate(birthDate)
+                .fcmToken(fcmToken)
                 .build();
         return friendRepository.save(friend);
     }

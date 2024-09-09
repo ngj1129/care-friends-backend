@@ -3,6 +3,7 @@ package hongikchildren.carefriends.fcm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import hongikchildren.carefriends.repository.CaregiverRepository;
 import hongikchildren.carefriends.repository.FriendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
@@ -20,6 +21,7 @@ import java.util.List;
 public class FcmServiceImpl implements FcmService {
 
     private final FriendRepository friendRepository;
+    private final CaregiverRepository caregiverRepository;
 
     /**
      * 푸시 메시지 처리를 수행하는 비즈니스 로직
@@ -39,7 +41,7 @@ public class FcmServiceImpl implements FcmService {
 
         HttpEntity entity = new HttpEntity<>(message, headers);
 
-        String API_URL = "https://fcm.googleapis.com/v1/projects/carefriends-1e6d8/messages:send";
+        String API_URL = "https://fcm.googleapis.com/v1/projects/carefriends-ede42/messages:send";
         ResponseEntity response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
         System.out.println(response.getStatusCode());
@@ -53,7 +55,8 @@ public class FcmServiceImpl implements FcmService {
      * @return Bearer token
      */
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/carefriends-1e6d8-firebase-adminsdk-711ao-fe8d4dfe39.json";
+        String firebaseConfigPath = "firebase/carefriends-ede42-507320a7d7a1.json";
+
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
@@ -71,9 +74,24 @@ public class FcmServiceImpl implements FcmService {
      */
     private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
+
+        String fcmToken;
+
+        if("Friend".equals(fcmSendDto.getReceiverType())){
+            fcmToken = friendRepository.findById(fcmSendDto.getId())
+                    .orElseThrow(()->new RuntimeException("프렌드 찾을 수 없음"))
+                    .getFcmToken();
+        } else if ("Caregiver".equals(fcmSendDto.getReceiverType())){
+            fcmToken = caregiverRepository.findById(fcmSendDto.getId())
+                    .orElseThrow(()->new RuntimeException("보호자 찾을 수 없음"))
+                    .getFcmToken();
+        } else{
+            throw new RuntimeException("Invalid receiver type");
+        }
+
         FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
                 .message(FcmMessageDto.Message.builder()
-                        .token(friendRepository.findById(fcmSendDto.getId()).get().getToken()) //null 검사 안함.
+                        .token(fcmToken)
                         .notification(FcmMessageDto.Notification.builder()
                                 .title(fcmSendDto.getTitle())
                                 .body(fcmSendDto.getBody())

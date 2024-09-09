@@ -4,6 +4,7 @@ import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.service.CaregiverService;
 import hongikchildren.carefriends.service.FriendService;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,8 @@ public class UserController {
                     requestDto.getPhone(),
                     requestDto.getEmail(),
                     Gender.valueOf(requestDto.getGender().toUpperCase()),
-                    birthDate
+                    birthDate,
+                    requestDto.getFcmToken()
             );
         } else if ("friend".equalsIgnoreCase(requestDto.getUserType())) {
             // Friend 저장 로직
@@ -48,7 +50,8 @@ public class UserController {
                     requestDto.getPhone(),
                     requestDto.getEmail(),
                     Gender.valueOf(requestDto.getGender().toUpperCase()),
-                    birthDate
+                    birthDate,
+                    requestDto.getFcmToken()
             );
         } else {
             System.out.println("Invalid user type");
@@ -66,6 +69,7 @@ public class UserController {
         private String phone;
         private String gender; // 'MALE' 또는 'FEMALE'
         private String birthDate; // 문자열 형태로 받아서 LocalDate로 변환
+        private String fcmToken;
     }
 }
 
