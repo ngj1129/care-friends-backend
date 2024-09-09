@@ -85,6 +85,13 @@
             Caregiver caregiver = friendRequest.getCaregiver();
             caregiver.addFriend(friendRequest.getFriend());
 
+            // FCM 알림 전송
+            FcmSendDto fcmSendDto = FcmSendDto.builder()
+                    .id(caregiver.getId())
+                    .title("친구 요청 수락")
+                    .body("친구 요청이 수락되었습니다.")
+                    .build();
+
             friendRequestRepository.save(friendRequest);
             caregiverRepository.save(caregiver);
 
