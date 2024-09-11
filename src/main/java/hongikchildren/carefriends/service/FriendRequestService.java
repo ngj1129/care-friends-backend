@@ -128,6 +128,7 @@
             return friendRequestRepository.findByFriendAndStatus(friend, "pending");
         }
 
+        // 보호자의 친구 요청 취소하기
         @Transactional
         public void cancelFriendRequest(Long requestId) {
             FriendRequest friendRequest = friendRequestRepository.findById(requestId)
@@ -135,5 +136,12 @@
 
             friendRequest.setStatus("cancelled");
             friendRequestRepository.save(friendRequest);
+        }
+
+        // 보호자가 보낸 친구 요청 목록 조회
+        public List<FriendRequest> getFriendRequestsByCaregiver(UUID caregiverId) {
+            Caregiver caregiver = caregiverRepository.findById(caregiverId)
+                    .orElseThrow(() -> new RuntimeException("Caregiver not found"));
+            return friendRequestRepository.findByCaregiver(caregiver);
         }
     }

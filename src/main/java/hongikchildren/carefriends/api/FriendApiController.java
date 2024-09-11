@@ -10,6 +10,7 @@ import hongikchildren.carefriends.repository.FriendRepository;
 import hongikchildren.carefriends.repository.FriendRequestRepository;
 import hongikchildren.carefriends.service.FriendRequestService;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,7 +90,18 @@ public class FriendApiController {
         return ResponseEntity.ok().build();
     }
 
-    // 보호자가 보낸 친구 요청 상태 조회
+    // 보호자의 친구 요청 목록 조회
+    @GetMapping("/getRequests/{caregiverId}")
+    public List<FriendRequestListResponse> getRequests(@PathVariable UUID caregiverId) {
+        List<FriendRequest> requests = friendRequestService.getFriendRequestsByCaregiver(caregiverId);
+        return requests.stream()
+                .map(request -> new FriendRequestListResponse(
+                        request.getId(),
+                        request.getFriend().getId(),
+                        request.getFriend().getName(),
+                        request.getStatus()))
+                .collect(Collectors.toList());
+    }
 
     // 프렌즈가 대기 중인 친구 요청 조회
     @GetMapping("/pendingRequests/{friendId}")
@@ -134,6 +146,21 @@ public class FriendApiController {
             this.requestId = requestId;
             this.caregiverName = caregiverName;
             this.caregiverId = caregiverId;
+            this.status = status;
+        }
+    }
+
+    @Data
+    public static class FriendRequestListResponse {
+        private Long requestId;
+        private UUID friendId;
+        private String friendName;
+        private String status;
+
+        public FriendRequestListResponse(Long requestId, UUID friendId, String friendName, String status) {
+            this.requestId = requestId;
+            this.friendId = friendId;
+            this.friendName = friendName;
             this.status = status;
         }
     }
