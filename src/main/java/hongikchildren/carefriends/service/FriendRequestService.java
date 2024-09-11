@@ -120,12 +120,20 @@
             friendRequestRepository.save(friendRequest);
         }
 
-
         // 대기중인 친구 요청 조회하기
         public List<FriendRequest> getPendingRequest(UUID friendId){
             Friend friend = friendRepository.findById(friendId)
                     .orElseThrow(()->new RuntimeException("Friend not found"));
 
             return friendRequestRepository.findByFriendAndStatus(friend, "pending");
+        }
+
+        @Transactional
+        public void cancelFriendRequest(Long requestId) {
+            FriendRequest friendRequest = friendRequestRepository.findById(requestId)
+                    .orElseThrow(() -> new RuntimeException("Friend Request not found"));
+
+            friendRequest.setStatus("cancelled");
+            friendRequestRepository.save(friendRequest);
         }
     }

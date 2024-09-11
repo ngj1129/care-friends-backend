@@ -36,23 +36,6 @@ public class FriendApiController {
         return new AddFriendResponse(request.getFriendId());
     }
 
-//    @GetMapping("/getFriends/{caregiverId}/{friendId}")
-//    public GetFriendsResponse getFriends(UUID caregiverId, UUID friendId){
-//        // 특정 caregiver가 관리하는 firned들의 id 조회
-//        List<UUID> caregiversFriendsIds = caregiverRepository.findById(caregiverId)
-//                .orElseThrow(() -> new RuntimeException("Caregiver not found"))
-//                .getFriends().stream()
-//                .map(Friend::getId)
-//                .collect(Collectors.toList());
-//
-//        // 특정 friend를 관리하는 caregiver id를 조회
-//        UUID friendCaregiverId = friendRepository.findById(friendId)
-//                .orElseThrow(() -> new RuntimeException("Friend not found"))
-//                .getCaregiver().getId();
-//
-//        return new GetFriendsResponse(caregiversFriendsIds, friendCaregiverId);
-//    }
-
     // 보호자가 관리하는 모든 프렌즈 Id 조회
     @GetMapping("/getFriends/{caregiverId}")
     public List<FriendInfoResponse> getFriends(@PathVariable UUID caregiverId){
@@ -100,6 +83,11 @@ public class FriendApiController {
     // 보호자가 관리하는 친구 삭제 api
 
     // 보호자가 보낸 친구 요청 취소
+    @PostMapping("/{requestId}/cancel")
+    public ResponseEntity<Void> cancelFriendRequest(@PathVariable Long requestId) {
+        friendRequestService.cancelFriendRequest(requestId);
+        return ResponseEntity.ok().build();
+    }
 
     // 보호자가 보낸 친구 요청 상태 조회
 
@@ -134,16 +122,6 @@ public class FriendApiController {
         }
     }
 
-//    @Data
-//    static class GetFriendsResponse {
-//        private List<UUID> caregiverFriendsIds;
-//        private UUID friendCaregiverId;
-//
-//        public GetFriendsResponse(List<UUID> caregiverFriendsIds, UUID friendCaregiverId) {
-//            this.caregiverFriendsIds = caregiverFriendsIds;
-//            this.friendCaregiverId = friendCaregiverId;
-//        }
-//    }
 
     @Data
     static class FriendRequestResponse {
