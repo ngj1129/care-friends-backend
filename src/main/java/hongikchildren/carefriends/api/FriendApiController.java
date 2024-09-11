@@ -4,6 +4,7 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import hongikchildren.carefriends.domain.Caregiver;
 import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.FriendRequest;
+import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.repository.CaregiverRepository;
 import hongikchildren.carefriends.repository.FriendRepository;
 import hongikchildren.carefriends.repository.FriendRequestRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -53,11 +55,16 @@ public class FriendApiController {
 
     // 보호자가 관리하는 모든 프렌즈 Id 조회
     @GetMapping("/getFriends/{caregiverId}")
-    public List<UUID> getFriends(@PathVariable UUID caregiverId){
+    public List<FriendInfoResponse> getFriends(@PathVariable UUID caregiverId){
         return caregiverRepository.findById(caregiverId)
                 .orElseThrow(() -> new NotFoundException("caregiver not found"))
                 .getFriends().stream()
-                .map(Friend::getId)
+                .map(friend -> new FriendInfoResponse(
+                        friend.getName(),
+                        friend.getPhoneNumber(),
+                        friend.getBirthDate(),
+                        friend.getGender()
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -143,6 +150,21 @@ public class FriendApiController {
             this.caregiverName = caregiverName;
             this.caregiverId = caregiverId;
             this.status = status;
+        }
+    }
+
+    @Data
+    public static class FriendInfoResponse {
+        private String name;
+        private String phoneNumber;
+        private LocalDate birthDate;
+        private Gender gender;
+
+        public FriendInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+            this.name = name;
+            this.phoneNumber = phoneNumber;
+            this.birthDate = birthDate;
+            this.gender = gender;
         }
     }
 }
