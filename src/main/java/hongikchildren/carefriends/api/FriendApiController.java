@@ -68,12 +68,19 @@ public class FriendApiController {
                 .collect(Collectors.toList());
     }
 
-    // 프렌즈의 보호자 id 조회
+    // 프렌즈의 보호자 정보 조회
     @GetMapping("/getCaregiver/{friendId}")
-    public UUID getCaregiver(@PathVariable UUID friendId){
-        return friendRepository.findById(friendId)
-                .orElseThrow(() -> new RuntimeException("프렌즈 찾을 수 없음"))
-                .getCaregiver().getId();
+    public CaregiverInfoResponse getCaregiver(@PathVariable UUID friendId){
+        Friend friend =  friendRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("프렌즈 찾을 수 없음"));
+
+        Caregiver caregiver = friend.getCaregiver();
+        return new CaregiverInfoResponse(
+                caregiver.getName(),
+                caregiver.getPhoneNumber(),
+                caregiver.getBirthDate(),
+                caregiver.getGender()
+        );
     }
 
     // 친구 요청 수락 api
@@ -161,6 +168,21 @@ public class FriendApiController {
         private Gender gender;
 
         public FriendInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+            this.name = name;
+            this.phoneNumber = phoneNumber;
+            this.birthDate = birthDate;
+            this.gender = gender;
+        }
+    }
+
+    @Data
+    public static class CaregiverInfoResponse {
+        private String name;
+        private String phoneNumber;
+        private LocalDate birthDate;
+        private Gender gender;
+
+        public CaregiverInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender) {
             this.name = name;
             this.phoneNumber = phoneNumber;
             this.birthDate = birthDate;
