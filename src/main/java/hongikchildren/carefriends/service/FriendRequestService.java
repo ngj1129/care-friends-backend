@@ -120,12 +120,28 @@
             friendRequestRepository.save(friendRequest);
         }
 
-
         // 대기중인 친구 요청 조회하기
         public List<FriendRequest> getPendingRequest(UUID friendId){
             Friend friend = friendRepository.findById(friendId)
                     .orElseThrow(()->new RuntimeException("Friend not found"));
 
             return friendRequestRepository.findByFriendAndStatus(friend, "pending");
+        }
+
+        // 보호자의 친구 요청 취소하기
+        @Transactional
+        public void cancelFriendRequest(Long requestId) {
+            FriendRequest friendRequest = friendRequestRepository.findById(requestId)
+                    .orElseThrow(() -> new RuntimeException("Friend Request not found"));
+
+            friendRequest.setStatus("cancelled");
+            friendRequestRepository.save(friendRequest);
+        }
+
+        // 보호자가 보낸 친구 요청 목록 조회
+        public List<FriendRequest> getFriendRequestsByCaregiver(UUID caregiverId) {
+            Caregiver caregiver = caregiverRepository.findById(caregiverId)
+                    .orElseThrow(() -> new RuntimeException("Caregiver not found"));
+            return friendRequestRepository.findByCaregiver(caregiver);
         }
     }

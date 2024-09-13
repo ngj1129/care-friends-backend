@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
     List<FriendRequest> findByFriendAndStatus(Friend friend, String status);
     Optional<FriendRequest> findByCaregiverAndFriendAndStatus(Caregiver caregiver, Friend friend, String status);
+    List<FriendRequest> findByCaregiver(Caregiver caregiver);
 }
