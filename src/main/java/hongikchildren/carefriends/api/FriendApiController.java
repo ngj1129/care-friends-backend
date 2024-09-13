@@ -44,6 +44,7 @@ public class FriendApiController {
                 .orElseThrow(() -> new NotFoundException("caregiver not found"))
                 .getFriends().stream()
                 .map(friend -> new FriendInfoResponse(
+                        friend.getId(),
                         friend.getName(),
                         friend.getPhoneNumber(),
                         friend.getBirthDate(),
@@ -112,6 +113,21 @@ public class FriendApiController {
                 .collect(Collectors.toList());
     }
 
+    // 프렌드 찾기
+    @GetMapping("/searchFriend/{uuid}")
+    public ResponseEntity<FriendInfoResponse> searhFriend(@PathVariable UUID uuid){
+        Friend friend = friendRepository.findById(uuid)
+                .orElseThrow(()-> new NotFoundException("friend not found"));
+        FriendInfoResponse friendInfoResponse = new FriendInfoResponse(
+                friend.getId(),
+                friend.getName(),
+                friend.getPhoneNumber(),
+                friend.getBirthDate(),
+                friend.getGender()
+        );
+        return ResponseEntity.ok(friendInfoResponse);
+    }
+
     @Data
     static class AddFriendRequest{
         private UUID friendId;
@@ -167,12 +183,14 @@ public class FriendApiController {
 
     @Data
     public static class FriendInfoResponse {
+        private UUID friendId;
         private String name;
         private String phoneNumber;
         private LocalDate birthDate;
         private Gender gender;
 
-        public FriendInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+        public FriendInfoResponse(UUID friendId, String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+            this.friendId = friendId;
             this.name = name;
             this.phoneNumber = phoneNumber;
             this.birthDate = birthDate;
