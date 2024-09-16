@@ -18,7 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Caregiver {
+public class Caregiver implements User {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "caregiverId")

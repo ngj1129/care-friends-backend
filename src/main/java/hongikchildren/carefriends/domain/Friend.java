@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Friend {
+public class Friend implements User {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "friendId")

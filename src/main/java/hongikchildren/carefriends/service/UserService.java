@@ -15,10 +15,13 @@ public class UserService {
     private final CaregiverRepository caregiverRepository;
     private final FriendRepository friendRepository;
 
-    public boolean isExistingUser(String email) {
+    public String isExistingUser(String email) {
         if (caregiverRepository.findByEmail(email).isPresent()) {
-            return true;
+            return "caregiver";
         }
-        return friendRepository.findByEmail(email).isPresent();
+        if (friendRepository.findByEmail(email).isPresent()) {
+            return "friend";
+        }
+        return "null";
     }
 }
