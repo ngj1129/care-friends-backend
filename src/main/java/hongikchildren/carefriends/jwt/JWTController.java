@@ -63,4 +63,17 @@ public class JWTController {
             return ResponseEntity.ok(response);
         }
     }
+
+    @GetMapping("/api")
+    public Map<String, String> getEmail(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+
+        String email = jwtUtil.getEmail(token);
+        System.out.println("유저 이메일 " + email);
+        Map<String, String> response = new HashMap<>();
+        response.put("email", email);
+
+        return response;
+
+    }
 }

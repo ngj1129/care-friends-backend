@@ -45,7 +45,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         // 토큰에서 사용자 정보(이메일) 획득
-        String username = jwtUtil.getUsername(token);
+        String username = jwtUtil.getEmail(token);
 
         // DB에서 사용자를 조회하여 UserDetails 획득
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
