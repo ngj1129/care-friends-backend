@@ -47,6 +47,10 @@ public class CaregiverService {
         return caregiverRepository.findById(id);
     }
 
+    // email로 Friend 조회
+    public Optional<Caregiver> getCaregiverByEmail(String email){ return caregiverRepository.findByEmail(email); }
+
+
     // Caregiver 업데이트
     @Transactional
     public Caregiver updateCaregiver(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate){
