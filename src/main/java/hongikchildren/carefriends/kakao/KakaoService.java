@@ -30,40 +30,40 @@ public class KakaoService {
         this.clientId = clientId;
     }
 
-    public String getAccessTokenFromKakao(String code) {
-        String tokenUrl = KAUTH_TOKEN_URL_HOST + "/oauth/token";
-
-        // 요청 파라미터 설정
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", clientId); // 카카오 클라이언트 ID
-        params.add("code", code);
-
-        // HTTP 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        // 요청 엔티티 생성
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
-
-        // 카카오 서버에 POST 요청 보내기
-        ResponseEntity<KakaoTokenResponseDto> responseEntity = restTemplate.exchange(
-                tokenUrl,
-                HttpMethod.POST,
-                requestEntity,
-                KakaoTokenResponseDto.class
-        );
-
-        // 응답에서 액세스 토큰 추출
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            KakaoTokenResponseDto responseBody = responseEntity.getBody();
-            if (responseBody != null) {
-                return responseBody.getAccessToken();
-            }
-        }
-
-        throw new RuntimeException("Failed to retrieve access token from Kakao");
-    }
+//    public String getAccessTokenFromKakao(String code) {
+//        String tokenUrl = KAUTH_TOKEN_URL_HOST + "/oauth/token";
+//
+//        // 요청 파라미터 설정
+//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//        params.add("grant_type", "authorization_code");
+//        params.add("client_id", clientId); // 카카오 클라이언트 ID
+//        params.add("code", code);
+//
+//        // HTTP 헤더 설정
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//        // 요청 엔티티 생성
+//        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+//
+//        // 카카오 서버에 POST 요청 보내기
+//        ResponseEntity<KakaoTokenResponseDto> responseEntity = restTemplate.exchange(
+//                tokenUrl,
+//                HttpMethod.POST,
+//                requestEntity,
+//                KakaoTokenResponseDto.class
+//        );
+//
+//        // 응답에서 액세스 토큰 추출
+//        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+//            KakaoTokenResponseDto responseBody = responseEntity.getBody();
+//            if (responseBody != null) {
+//                return responseBody.getAccessToken();
+//            }
+//        }
+//
+//        throw new RuntimeException("Failed to retrieve access token from Kakao");
+//    }
 
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
         String url = KAUTH_USER_URL_HOST + "/v2/user/me";

@@ -43,6 +43,9 @@ public class FriendService {
         return friendRepository.findById(id);
     }
 
+    // email로 Friend 조회
+    public Optional<Friend> getFriendByEmail(String email){ return friendRepository.findByEmail(email); }
+
     // Friend 업데이트
     @Transactional
     public Friend updateFriend(UUID id, String name, String phoneNumber, Gender gender, LocalDate birthDate){
