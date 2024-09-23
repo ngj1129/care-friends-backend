@@ -1,17 +1,17 @@
 package hongikchildren.carefriends.api;
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import hongikchildren.carefriends.domain.Caregiver;
-import hongikchildren.carefriends.domain.Friend;
-import hongikchildren.carefriends.domain.FriendRequest;
-import hongikchildren.carefriends.domain.Gender;
+import hongikchildren.carefriends.domain.*;
+import hongikchildren.carefriends.jwt.JWTUtil;
 import hongikchildren.carefriends.repository.CaregiverRepository;
 import hongikchildren.carefriends.repository.FriendRepository;
 import hongikchildren.carefriends.repository.FriendRequestRepository;
+import hongikchildren.carefriends.service.CaregiverService;
 import hongikchildren.carefriends.service.FriendRequestService;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +27,8 @@ public class FriendApiController {
     private final FriendRequestService friendRequestService;
     private final CaregiverRepository caregiverRepository;
     private final FriendRepository friendRepository;
+    private final JWTUtil jwtUtil;
+    private final CaregiverService caregiverService;
 
     // 친구 추가 요청
     @PostMapping
@@ -38,9 +40,14 @@ public class FriendApiController {
     }
 
     // 보호자가 관리하는 모든 프렌즈 Id 조회
-    @GetMapping("/getFriends/{caregiverId}")
-    public List<FriendInfoResponse> getFriends(@PathVariable UUID caregiverId){
-        return caregiverRepository.findById(caregiverId)
+    @GetMapping("/getFriends")
+    public List<FriendInfoResponse> getFriends(@RequestHeader("Authorization") String authorizationHeader){
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        return caregiverService.getCaregiverByEmail(email)
                 .orElseThrow(() -> new NotFoundException("caregiver not found"))
                 .getFriends().stream()
                 .map(friend -> new FriendInfoResponse(
