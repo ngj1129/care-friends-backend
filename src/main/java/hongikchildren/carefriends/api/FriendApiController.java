@@ -8,6 +8,7 @@ import hongikchildren.carefriends.repository.FriendRepository;
 import hongikchildren.carefriends.repository.FriendRequestRepository;
 import hongikchildren.carefriends.service.CaregiverService;
 import hongikchildren.carefriends.service.FriendRequestService;
+import hongikchildren.carefriends.service.FriendService;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,19 @@ public class FriendApiController {
     private final FriendRepository friendRepository;
     private final JWTUtil jwtUtil;
     private final CaregiverService caregiverService;
+    private final FriendService friendService;
 
     // 친구 추가 요청
     @PostMapping
-    public AddFriendResponse addFriend(@RequestBody AddFriendRequest request){
-        FriendRequest friendRequest = friendRequestService.sendFriendRequest(request.getCaregiver(), request.getFriendId());
+    public AddFriendResponse addFriend(@RequestHeader("Authorization") String authorizationHeader, @RequestBody AddFriendRequest request){
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        Caregiver caregiver = caregiverService.getCaregiverByEmail(email).orElseThrow();
+
+        FriendRequest friendRequest = friendRequestService.sendFriendRequest(caregiver, request.getFriendId());
 //        friendRequestService.acceptFriendRequest(friendRequest.getId());
 
         return new AddFriendResponse(request.getFriendId());
@@ -77,14 +86,24 @@ public class FriendApiController {
 
     // 친구 요청 수락 api
     @PostMapping("/{requestId}/accept")
-    public ResponseEntity<Void> acceptFriendRequest(@PathVariable Long requestId){
+    public ResponseEntity<Void> acceptFriendRequest(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long requestId){
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
         friendRequestService.acceptFriendRequest(requestId);
         return ResponseEntity.ok().build();
     }
 
     // 친구 요청 거절 api
     @PostMapping("/{requestId}/reject")
-    public ResponseEntity<Void> rejectFriendRequest(@PathVariable Long requestId){
+    public ResponseEntity<Void> rejectFriendRequest(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long requestId){
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
         friendRequestService.rejectFriendRequest(requestId);
         return ResponseEntity.ok().build();
     }
@@ -93,15 +112,27 @@ public class FriendApiController {
 
     // 보호자가 보낸 친구 요청 취소
     @PostMapping("/{requestId}/cancel")
-    public ResponseEntity<Void> cancelFriendRequest(@PathVariable Long requestId) {
+    public ResponseEntity<Void> cancelFriendRequest(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long requestId) {
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
         friendRequestService.cancelFriendRequest(requestId);
         return ResponseEntity.ok().build();
     }
 
     // 보호자의 친구 요청 목록 조회
-    @GetMapping("/getRequests/{caregiverId}")
-    public List<FriendRequestListResponse> getRequests(@PathVariable UUID caregiverId) {
-        List<FriendRequest> requests = friendRequestService.getFriendRequestsByCaregiver(caregiverId);
+    @GetMapping("/getRequests")
+    public List<FriendRequestListResponse> getRequests(@RequestHeader("Authorization") String authorizationHeader) {
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        Caregiver caregiver = caregiverService.getCaregiverByEmail(email).orElseThrow();
+
+        List<FriendRequest> requests = friendRequestService.getFriendRequestsByCaregiver(caregiver.getId());
         return requests.stream()
                 .map(request -> new FriendRequestListResponse(
                         request.getId(),
@@ -112,9 +143,16 @@ public class FriendApiController {
     }
 
     // 프렌즈가 대기 중인 친구 요청 조회
-    @GetMapping("/pendingRequests/{friendId}")
-    public List<FriendRequestResponse> getPendingRequests(@PathVariable UUID friendId){
-        List<FriendRequest> pendingRequests = friendRequestService.getPendingRequest(friendId);
+    @GetMapping("/pendingRequests")
+    public List<FriendRequestResponse> getPendingRequests(@RequestHeader("Authorization") String authorizationHeader){
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        Friend friend = friendService.getFriendByEmail(email).orElseThrow();
+
+        List<FriendRequest> pendingRequests = friendRequestService.getPendingRequest(friend.getId());
         return pendingRequests.stream()
                 .map(req -> new FriendRequestResponse(req.getId(), req.getCaregiver().getId(), req.getCaregiver().getName(), req.getStatus()))
                 .collect(Collectors.toList());
@@ -122,7 +160,12 @@ public class FriendApiController {
 
     // 프렌드 찾기
     @GetMapping("/searchFriend/{uuid}")
-    public ResponseEntity<FriendInfoResponse> searhFriend(@PathVariable UUID uuid){
+    public ResponseEntity<FriendInfoResponse> searhFriend(@RequestHeader("Authorization") String authorizationHeader, @PathVariable UUID uuid){
+        // JWT에서 이메일 추출
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        String email = jwtUtil.getEmail(token); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
         Friend friend = friendRepository.findById(uuid)
                 .orElseThrow(()-> new NotFoundException("friend not found"));
         FriendInfoResponse friendInfoResponse = new FriendInfoResponse(
