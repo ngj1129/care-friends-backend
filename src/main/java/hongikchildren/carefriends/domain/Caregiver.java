@@ -32,6 +32,8 @@ public class Caregiver implements User {
 
     private String email;
 
+    private String profileImg;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -66,6 +68,10 @@ public class Caregiver implements User {
     public void removeFriend(Friend friend){
         this.friends.remove(friend);
         friend.removeCaregiver(); // friends 엔티티의 caregiver 초기화
+    }
+
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 
 }
