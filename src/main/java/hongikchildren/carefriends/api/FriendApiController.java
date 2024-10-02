@@ -66,9 +66,11 @@ public class FriendApiController {
     }
 
     // 프렌즈의 보호자 정보 조회
-    @GetMapping("/getCaregiver/{friendId}")
-    public CaregiverInfoResponse getCaregiver(@PathVariable UUID friendId){
-        Friend friend =  friendRepository.findById(friendId)
+    @GetMapping("/getCaregiver")
+    public CaregiverInfoResponse getCaregiver(@AuthenticationPrincipal UserDetails userDetails){
+        String email = userDetails.getUsername();
+        System.out.println("JWT에서 추출된 이메일: " + email);
+        Friend friend =  friendRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("프렌즈 찾을 수 없음"));
 
         Caregiver caregiver = friend.getCaregiver();
