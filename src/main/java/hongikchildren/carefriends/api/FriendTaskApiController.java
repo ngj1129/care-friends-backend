@@ -102,8 +102,13 @@ public class FriendTaskApiController {
         return list;
     }
 
-    @GetMapping("/friend/tasks/{friendId}")
-    public List<perTaskResponse> getFriendTasks(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID friendId, @RequestParam String date) {
+    // 보호자의 프렌즈로 등록된 노약자의 일정 불러오기 (특정 날짜 일정 혹은 전체 일정)
+    @GetMapping("/{friendId}")
+    public List<perTaskResponse> getMyFriendTasks(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable UUID friendId,
+            @RequestParam(required = false) String date) {
+
         // JWT에서 이메일 추출
         String email = userDetails.getUsername();
         System.out.println("JWT에서 추출된 이메일: " + email);
@@ -118,12 +123,57 @@ public class FriendTaskApiController {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("해당 친구를 찾을 수 없습니다."));
 
-        // 친구의 일정 목록을 가져오기
-        // 요청한 날짜 (오늘)의 일정만 필터링
-        LocalDate requestedDate = LocalDate.parse(date);
-        List<Task> tasks = taskService.getTasksByFriend(friend.getId()).stream()
-                .filter(task -> task.getDate().equals(requestedDate))  // 날짜 필터링
-                .collect(Collectors.toList());
+
+        List<Task> tasks;
+        if(date != null){
+            LocalDate requestedDate = LocalDate.parse(date);
+            tasks = taskService.getTasksByFriendAndDate(friend.getId(), requestedDate);
+        } else {
+            tasks = taskService.getTasksByFriend(friend.getId());
+        }
+
+
+        // 일정 정보를 반환
+        return tasks.stream().map(
+                task -> perTaskResponse.builder()
+                        .id(task.getId())
+                        .location(task.getLocation())
+                        .memo(task.getMemo())
+                        .signalTime(task.getSignalTime())
+                        .startTime(task.getStartTime())
+                        .status(task.getStatus())
+                        .taskType(task.getTaskType())
+                        .title(task.getTitle())
+                        .date(task.getDate())
+                        .build()
+        ).collect(Collectors.toList());
+    }
+
+
+    // 프렌즈의 자신의 일정 가져오기 (특정 날짜 혹은 전체 일정)
+    @GetMapping("/myTask")
+    public List<perTaskResponse> getMyTasks(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(required = false) String date) {
+
+        // JWT에서 이메일 추출
+        String email = userDetails.getUsername();
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        // 이메일로 프렌즈 정보 조회
+        Friend friend = friendService.getFriendByEmail(email)
+                .orElseThrow(() -> new RuntimeException("프렌즈를 찾을 수 없습니다."));
+
+        // 일정 목록 가져오기 (특정 날짜 or 전체 일정)
+        List<Task> tasks;
+        if (date != null) {
+            // 요청한 날짜의 일정만 가져오기
+            LocalDate requestedDate = LocalDate.parse(date);
+            tasks = taskService.getTasksByFriendAndDate(friend.getId(), requestedDate);
+        } else {
+            // 전체 일정 가져오기
+            tasks = taskService.getTasksByFriend(friend.getId());
+        }
 
         // 일정 정보를 반환
         return tasks.stream().map(
