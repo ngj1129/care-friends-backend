@@ -105,6 +105,10 @@ public class TaskService {
         return taskRepository.findByFriendId(friendId);
     }
 
+    public List<Task> getTasksByFriendAndDate(UUID friendId, LocalDate date) {
+        return taskRepository.findByFriendIdAndDate(friendId, date);
+    }
+
 
     public int updateTask(Long id, String title, String memo){
         return taskRepository.updateTask(id, title, memo);

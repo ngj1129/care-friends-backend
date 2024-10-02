@@ -22,6 +22,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByFriendId(UUID friendId);
 
+    List<Task> findByFriendIdAndDate(UUID friendId, LocalDate date);
+
     @Modifying
     @Transactional
     @Query("UPDATE Task e SET e.title = :title, e.memo = :memo WHERE e.id = :id")
