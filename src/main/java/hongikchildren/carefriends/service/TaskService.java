@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = false)
@@ -99,6 +100,11 @@ public class TaskService {
         List<Task> result = taskRepository.findAll();
         return result;
     }
+
+    public List<Task> getTasksByFriend(UUID friendId) {
+        return taskRepository.findByFriendId(friendId);
+    }
+
 
     public int updateTask(Long id, String title, String memo){
         return taskRepository.updateTask(id, title, memo);

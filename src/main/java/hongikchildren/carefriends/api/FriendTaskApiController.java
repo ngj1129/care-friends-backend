@@ -2,6 +2,7 @@ package hongikchildren.carefriends.api;
 
 import hongikchildren.carefriends.domain.*;
 import hongikchildren.carefriends.jwt.JWTUtil;
+import hongikchildren.carefriends.service.CaregiverService;
 import hongikchildren.carefriends.service.FriendService;
 import hongikchildren.carefriends.service.TaskService;
 import lombok.Builder;
@@ -10,12 +11,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class FriendTaskApiController {
 
     private final TaskService taskService;
     private final FriendService friendService;
+    private final CaregiverService caregiverService;
     private final JWTUtil jwtUtil;
 
     /**
@@ -95,6 +101,42 @@ public class FriendTaskApiController {
 
         return list;
     }
+
+    @GetMapping("/friend/tasks/{friendId}")
+    public List<perTaskResponse> getFriendTasks(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID friendId) {
+        // JWT에서 이메일 추출
+        String email = userDetails.getUsername();
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        // 이메일로 보호자 정보 조회
+        Caregiver caregiver = caregiverService.getCaregiverByEmail(email)
+                .orElseThrow(() -> new RuntimeException("보호자를 찾을 수 없습니다."));
+
+        // 해당 보호자의 친구 중 요청한 friendId와 일치하는 친구의 일정만 가져오기
+        Friend friend = caregiver.getFriends().stream()
+                .filter(f -> f.getId().equals(friendId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("해당 친구를 찾을 수 없습니다."));
+
+        // 친구의 일정 목록을 가져오기
+        List<Task> tasks = taskService.getTasksByFriend(friend.getId());
+
+        // 일정 정보를 반환
+        return tasks.stream().map(
+                task -> perTaskResponse.builder()
+                        .id(task.getId())
+                        .location(task.getLocation())
+                        .memo(task.getMemo())
+                        .signalTime(task.getSignalTime())
+                        .startTime(task.getStartTime())
+                        .status(task.getStatus())
+                        .taskType(task.getTaskType())
+                        .title(task.getTitle())
+                        .date(task.getDate())
+                        .build()
+        ).collect(Collectors.toList());
+    }
+
 
     @PostMapping("/update")
     public void updateTask(@RequestBody TaskUpdateRequest taskUpdateRequest) {
