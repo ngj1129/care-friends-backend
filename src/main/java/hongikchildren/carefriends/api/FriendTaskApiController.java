@@ -103,7 +103,7 @@ public class FriendTaskApiController {
     }
 
     @GetMapping("/friend/tasks/{friendId}")
-    public List<perTaskResponse> getFriendTasks(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID friendId) {
+    public List<perTaskResponse> getFriendTasks(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID friendId, @RequestParam String date) {
         // JWT에서 이메일 추출
         String email = userDetails.getUsername();
         System.out.println("JWT에서 추출된 이메일: " + email);
@@ -119,7 +119,11 @@ public class FriendTaskApiController {
                 .orElseThrow(() -> new RuntimeException("해당 친구를 찾을 수 없습니다."));
 
         // 친구의 일정 목록을 가져오기
-        List<Task> tasks = taskService.getTasksByFriend(friend.getId());
+        // 요청한 날짜 (오늘)의 일정만 필터링
+        LocalDate requestedDate = LocalDate.parse(date);
+        List<Task> tasks = taskService.getTasksByFriend(friend.getId()).stream()
+                .filter(task -> task.getDate().equals(requestedDate))  // 날짜 필터링
+                .collect(Collectors.toList());
 
         // 일정 정보를 반환
         return tasks.stream().map(
