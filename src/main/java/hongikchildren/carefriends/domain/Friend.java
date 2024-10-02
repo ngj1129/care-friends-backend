@@ -31,6 +31,8 @@ public class Friend implements User {
 
     private String email;
 
+    private String profileImg;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -86,5 +88,8 @@ public class Friend implements User {
         task.removeFriend(); // Task 엔티티의 Friend 초기화
     }
 
+    public void setProfileImg(String profileImg){
+        this.profileImg = profileImg;
+    }
 
 }
