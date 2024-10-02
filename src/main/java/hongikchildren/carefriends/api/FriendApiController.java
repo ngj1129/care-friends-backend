@@ -74,6 +74,10 @@ public class FriendApiController {
                 .orElseThrow(() -> new RuntimeException("프렌즈 찾을 수 없음"));
 
         Caregiver caregiver = friend.getCaregiver();
+        if (caregiver == null) {
+            return null; // 보호자가 없을 경우 null 반환
+        }
+
         return new CaregiverInfoResponse(
                 caregiver.getName(),
                 caregiver.getPhoneNumber(),
