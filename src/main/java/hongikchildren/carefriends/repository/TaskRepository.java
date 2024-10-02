@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findById(Long id);
@@ -18,6 +19,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByFriend(Friend friend);
 
     List<Task> findByDate(LocalDate date);
+
+    List<Task> findByFriendId(UUID friendId);
 
     @Modifying
     @Transactional
