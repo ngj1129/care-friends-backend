@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -136,6 +137,8 @@ public class TaskService {
     public List<Task> getTasksByFriend(UUID friendId) {
         return taskRepository.findByFriendId(friendId);
     }
+
+    public Task getTaskById(Long id) {return taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found with id: " + id));}
 
     public List<Task> getTasksByFriendAndDate(UUID friendId, LocalDate date) {
         return taskRepository.findByFriendIdAndDate(friendId, date);
