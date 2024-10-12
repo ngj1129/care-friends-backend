@@ -1,6 +1,8 @@
 package hongikchildren.carefriends.service;
 
 import hongikchildren.carefriends.domain.*;
+import hongikchildren.carefriends.fcm.FcmSendDto;
+import hongikchildren.carefriends.fcm.FcmServiceImpl;
 import hongikchildren.carefriends.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +21,7 @@ import java.util.UUID;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final FcmServiceImpl fcmServiceImpl;
 
     /**
      *
@@ -89,6 +93,34 @@ public class TaskService {
 
                 taskRepository.save(newTask);
             }
+        }
+    }
+
+    @Transactional
+    public void sendTaskNotification(Long taskId){
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(()->new RuntimeException("일정을 찾을 수 없습니다."));
+
+        Friend friend = task.getFriend();
+        // 시간 형식 지정 (예: 12시 00분)
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH시 mm분");
+        String formattedTime = task.getStartTime().format(timeFormatter);
+
+        // FCM 알림 전송
+        FcmSendDto fcmSendDto = FcmSendDto.builder()
+                .id(friend.getId())
+                .title("일정을 확인하세요")
+                .body("오늘 '" + task.getTitle() + "'일정이 " + formattedTime + "에 있습니다.")
+                .receiverType("Friend")
+                .build();
+
+        try {
+            fcmServiceImpl.sendMessageTo(fcmSendDto);
+            System.out.println("FCM 메시지 전송 성공: " + fcmSendDto.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("FCM 메시지 전송 실패");
+            throw new RuntimeException("FCM 메시지 전송에 실패했습니다.");
         }
     }
 
