@@ -113,8 +113,8 @@ public class TaskService {
     }
 
 
-    public int updateTask(Long id, String title, String memo){
-        return taskRepository.updateTask(id, title, memo);
+    public int updateTask(Long id, String title,String location, String memo){
+        return taskRepository.updateTask(id, title,location, memo);
     }
 
     public void deleteTask(Long id) {
