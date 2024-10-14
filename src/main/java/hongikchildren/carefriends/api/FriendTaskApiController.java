@@ -219,10 +219,14 @@ public class FriendTaskApiController {
         
     }
 
+//    taskID로 일정 수정(제목, 장소, 메모)
+    @PutMapping("/{taskId}")
+    public void updateTask(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long taskId,
+            @RequestBody TaskUpdateRequest taskUpdateRequest) {
 
-    @PostMapping("/update")
-    public void updateTask(@RequestBody TaskUpdateRequest taskUpdateRequest) {
-        taskService.updateTask(taskUpdateRequest.getId(), taskUpdateRequest.getTitle(), taskUpdateRequest.getMemo());
+        taskService.updateTask(taskId, taskUpdateRequest.getTitle(), taskUpdateRequest.getLocation(), taskUpdateRequest.getMemo());
     }
 
     @DeleteMapping
@@ -239,10 +243,12 @@ public class FriendTaskApiController {
     static class TaskUpdateRequest {
         private Long id;
         private String title;
+        private String location;
         private String memo;
-        public TaskUpdateRequest(Long id, String title, String memo) {
+        public TaskUpdateRequest(Long id, String title, String location, String memo) {
             this.id = id;
             this.title = title;
+            this.location = location;
             this.memo = memo;
         }
     }

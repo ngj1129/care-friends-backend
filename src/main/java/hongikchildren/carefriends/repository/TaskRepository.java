@@ -26,6 +26,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Task e SET e.title = :title, e.memo = :memo WHERE e.id = :id")
-    int updateTask(@Param("id") Long id, @Param("title") String title, @Param("memo") String memo);
+    @Query("UPDATE Task e SET e.title = :title, e.location = :location, e.memo = :memo WHERE e.id = :id")
+    int updateTask(@Param("id") Long id, @Param("title") String title, @Param("location") String location, @Param("memo") String memo);
 }
