@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class ProfileApiController {
     /*
     내정보
     - 사진 -> 누르면 업로드/수정가능
+    - UUID
     - 이름
     - 전화번호
     - 생년월일
@@ -37,7 +39,7 @@ public class ProfileApiController {
         System.out.println("JWT에서 추출된 이메일: " + email);
 
         User user = userService.getUserByEmail(email);
-        return new ProfileResponse(user.getProfileImg(), user.getName(), user.getPhoneNumber(), user.getBirthDate(), user.getGender());
+        return new ProfileResponse(user.getProfileImg(), user.getId(), user.getName(), user.getPhoneNumber(), user.getBirthDate(), user.getGender());
     }
 
     @PostMapping("/img")
@@ -55,19 +57,21 @@ public class ProfileApiController {
 
         User user = userService.setProfile(email, getImageUrl);
 
-        return new ProfileResponse(user.getProfileImg(), user.getName(), user.getPhoneNumber(), user.getBirthDate(), user.getGender());
+        return new ProfileResponse(user.getProfileImg(), user.getId(), user.getName(), user.getPhoneNumber(), user.getBirthDate(), user.getGender());
     }
 
     @Data
     public static class ProfileResponse {
         private String profileImg;
+        private UUID uuid;
         private String name;
         private String phoneNumber;
         private LocalDate birthDate;
         private Gender gender;
 
-        public ProfileResponse(String profileImg, String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+        public ProfileResponse(String profileImg, UUID uuid, String name, String phoneNumber, LocalDate birthDate, Gender gender) {
             this.profileImg = profileImg;
+            this.uuid = uuid;
             this.name = name;
             this.phoneNumber = phoneNumber;
             this.birthDate = birthDate;
