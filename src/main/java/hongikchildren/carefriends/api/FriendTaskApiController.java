@@ -102,7 +102,7 @@ public class FriendTaskApiController {
         return list;
     }
 
-    // 보호자의 프렌즈로 등록된 노약자의 일정 불러오기 (특정 날짜 일정 혹은 전체 일정)
+    // 보호자의 프렌즈로 등록된 노약자의 일정 불러오기 (특정e 날짜 일정 혹은 전체 일정)
     @GetMapping("/{friendId}")
     public List<perTaskResponse> getMyFriendTasks(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -191,10 +191,42 @@ public class FriendTaskApiController {
         ).collect(Collectors.toList());
     }
 
+    // taskID 로 일정 한개만 가져오기
+    @GetMapping("/taskID/{taskID}")
+    public perTaskResponse getMyTasks(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long taskID) {
+        
+        // 일정 목록 가져오기 (특정 날짜 or 전체 일정)
+        Task task;
 
-    @PostMapping("/update")
-    public void updateTask(@RequestBody TaskUpdateRequest taskUpdateRequest) {
-        taskService.updateTask(taskUpdateRequest.getId(), taskUpdateRequest.getTitle(), taskUpdateRequest.getMemo());
+        task = taskService.getTaskById(taskID);
+
+        System.out.println(task);
+
+        // 일정 정보를 반환
+        return    perTaskResponse.builder()
+                    .id(task.getId())
+                    .location(task.getLocation())
+                    .memo(task.getMemo())
+                    .signalTime(task.getSignalTime())
+                    .startTime(task.getStartTime())
+                    .status(task.getStatus())
+                    .taskType(task.getTaskType())
+                    .title(task.getTitle())
+                    .date(task.getDate())
+                    .build();
+        
+    }
+
+//    taskID로 일정 수정(제목, 장소, 메모)
+    @PutMapping("/{taskId}")
+    public void updateTask(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long taskId,
+            @RequestBody TaskUpdateRequest taskUpdateRequest) {
+
+        taskService.updateTask(taskId, taskUpdateRequest.getTitle(), taskUpdateRequest.getLocation(), taskUpdateRequest.getMemo());
     }
 
     @DeleteMapping
@@ -211,10 +243,12 @@ public class FriendTaskApiController {
     static class TaskUpdateRequest {
         private Long id;
         private String title;
+        private String location;
         private String memo;
-        public TaskUpdateRequest(Long id, String title, String memo) {
+        public TaskUpdateRequest(Long id, String title, String location, String memo) {
             this.id = id;
             this.title = title;
+            this.location = location;
             this.memo = memo;
         }
     }

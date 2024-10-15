@@ -65,6 +65,12 @@ public class CaregiverTaskApiController {
         return new ResponseEntity<>(new taskResponse(task.getGroupId()), HttpStatus.OK);
     }
 
+    @PostMapping("/sendNotification")
+    public ResponseEntity<String> sendTaskNotification(@RequestBody TaskNotificationRequest request) {
+        taskService.sendTaskNotification(request.getTaskId());
+        return ResponseEntity.ok("알림이 전송되었습니다.");
+
+    }
 
     @Data
     static class taskRequest {
@@ -99,4 +105,15 @@ public class CaregiverTaskApiController {
         }
     }
 
+    @Data
+    public static class TaskNotificationRequest {
+        private Long taskId;
+
+        public TaskNotificationRequest() {
+        }
+
+        public TaskNotificationRequest(Long taskId) {
+            this.taskId = taskId;
+        }
+    }
 }
