@@ -52,6 +52,9 @@ public class Friend implements User {
     @OneToMany(mappedBy = "friend")
     private List<FriendRequest> friendRequests = new ArrayList<>();
 
+    @OneToMany(mappedBy = "friend")
+    private List<Location> locations = new ArrayList<>();
+
     @Builder
     public Friend(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner, String fcmToken) {
         this.id = id;
@@ -90,6 +93,12 @@ public class Friend implements User {
 
     public void setProfileImg(String profileImg){
         this.profileImg = profileImg;
+    }
+
+    // Location 추가 메서드
+    public void addLocation(Location location){
+        this.locations.add(location);
+        location.setFriend(this);
     }
 
 }
