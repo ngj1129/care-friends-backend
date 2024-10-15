@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,19 +55,27 @@ public class LocationApiController {
 
     // 보호자가 노약자의 위치 조회
     @GetMapping("/get")
-    public List<Location> getLocation(
+    public List<LocationResponse> getLocation(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody getLocationRequest request) {
+            @RequestParam UUID friendId) {
 
         String email = userDetails.getUsername();
 
-        // 이메일로 보호자 정보 가져오기
+        // 보호자 정보 확인
         Caregiver caregiver = caregiverService.getCaregiverByEmail(email)
                 .orElseThrow(() -> new RuntimeException("보호자를 찾을 수 없습니다."));
 
-        Friend friend = friendService.getFriendById(request.getFriendId()).orElseThrow();
+        // 친구 정보 조회
+        Friend friend = friendService.getFriendById(friendId)
+                .orElseThrow(() -> new RuntimeException("노약자를 찾을 수 없습니다."));
 
-        return locationService.findAll(friend);
+        // 해당 친구의 모든 위치 데이터 가져오기
+        List<Location> locations = locationService.findAll(friend);
+
+        // LocationResponse로 변환하여 반환
+        return locations.stream()
+                .map(location -> new LocationResponse(location.getId(), location.getLatitude(), location.getLongitude(), location.getTimestamp()))
+                .collect(Collectors.toList());
     }
 
     @Data
@@ -84,11 +93,19 @@ public class LocationApiController {
     }
 
     @Data
-    static class getLocationRequest {
-        private UUID friendId;
-        public getLocationRequest(UUID friendId) {
-            this.friendId = friendId;
+    public class LocationResponse {
+        private Long id;
+        private Double latitude;
+        private Double longitude;
+        private LocalDateTime timestamp;
+
+        public LocationResponse(Long id, Double latitude, Double longitude, LocalDateTime timestamp) {
+            this.id = id;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.timestamp = timestamp;
         }
     }
+
 
 }
