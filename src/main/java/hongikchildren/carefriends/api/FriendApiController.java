@@ -83,7 +83,8 @@ public class FriendApiController {
                 caregiver.getName(),
                 caregiver.getPhoneNumber(),
                 caregiver.getBirthDate(),
-                caregiver.getGender()
+                caregiver.getGender(),
+                caregiver.getProfileImg()
         );
     }
 
@@ -270,12 +271,14 @@ public class FriendApiController {
         private String phoneNumber;
         private LocalDate birthDate;
         private Gender gender;
+        private String profileImg;
 
-        public CaregiverInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+        public CaregiverInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender, String profileImg) {
             this.name = name;
             this.phoneNumber = phoneNumber;
             this.birthDate = birthDate;
             this.gender = gender;
+            this.profileImg = profileImg;
         }
     }
 }
