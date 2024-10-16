@@ -116,7 +116,19 @@ public class FriendApiController {
         return ResponseEntity.ok().build();
     }
 
-    // 보호자가 관리하는 친구 삭제 api
+        // 보호자가 관리하는 친구 삭제 api
+        @DeleteMapping("/{friendId}")
+        public ResponseEntity<Void> deleteFriendFromCaregiver(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID friendId){
+            String email = userDetails.getUsername();
+            System.out.println("JWT에서 추출된 이메일: " + email);
+
+            Caregiver caregiver = caregiverService.getCaregiverByEmail(email).orElseThrow();
+
+            Friend friend = friendService.getFriendById(friendId).orElseThrow();
+
+            caregiverService.deleteFriendFromCaregiver(caregiver.getId(), friend);
+            return ResponseEntity.ok().build();
+        }
 
     // 보호자가 보낸 친구 요청 취소
     @PostMapping("/{requestId}/cancel")
