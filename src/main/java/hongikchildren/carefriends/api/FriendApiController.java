@@ -92,6 +92,15 @@ public class FriendApiController {
         String email = userDetails.getUsername(); // JWT에서 추출된 이메일
         System.out.println("JWT에서 추출된 이메일: " + email);
 
+        Friend friend = friendService.getFriendByEmail(email)
+                .orElseThrow(()-> new RuntimeException("프렌즈를 찾을 수 없습니다."));
+
+        FriendRequest friendRequest = friendRequestService.getFriendRequestById(requestId);
+
+        if (!friendRequest.getFriend().getId().equals(friend.getId())) {
+            throw new RuntimeException("친구 요청 수락 권한이 없습니다.");
+        }
+
         friendRequestService.acceptFriendRequest(requestId);
         return ResponseEntity.ok().build();
     }
