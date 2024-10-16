@@ -144,4 +144,9 @@ public class FriendRequestService {
                 .orElseThrow(() -> new RuntimeException("Caregiver not found"));
         return friendRequestRepository.findByCaregiver(caregiver);
     }
+
+    public FriendRequest getFriendRequestById(Long requestId){
+        return friendRequestRepository.findById(requestId)
+                .orElseThrow(()->new RuntimeException("Friend Request not found"));
+    }
 }
