@@ -59,10 +59,12 @@ public class CaregiverService {
             Caregiver existingCaregiver = optionalCaregiver.get(); // get(): optional 객체가 값으로 채워져 있을 때 그 값(엔티티)을 반환
             Caregiver updatedCaregiver = Caregiver.builder()
                     .id(existingCaregiver.getId()) // 기존 id 유지. save 할 때 동일한 id를 갖는 엔티티가 이미 존재하면 해당 엔티티를 업데이트(merge)함.
-                    .name(name)
-                    .phoneNumber(phoneNumber)
-                    .gender(gender)
-                    .birthDate(birthDate)
+                    .email(existingCaregiver.getEmail()) // 기존 이메일 유지
+                    .fcmToken(existingCaregiver.getFcmToken()) // 기존 FCM 토큰 유지
+                    .name(name != null ? name : existingCaregiver.getName())
+                    .phoneNumber(phoneNumber != null ? phoneNumber : existingCaregiver.getPhoneNumber())
+                    .gender(gender != null ? gender : existingCaregiver.getGender())
+                    .birthDate(birthDate != null ? birthDate : existingCaregiver.getBirthDate())
                     .build();
 
             // 새로운 객체를 저장하고 반환

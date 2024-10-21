@@ -54,10 +54,12 @@ public class FriendService {
             Friend existingFriend = optionalFriend.get(); // get(): optional 객체가 값으로 채워져 있을 때 그 값(엔티티)을 반환
             Friend updatedFriend = Friend.builder()
                     .id(existingFriend.getId()) // 기존 id 유지. save 할 때 동일한 id를 갖는 엔티티가 이미 존재하면 해당 엔티티를 업데이트(merge)함.
-                    .name(name)
-                    .phoneNumber(phoneNumber)
-                    .gender(gender)
-                    .birthDate(birthDate)
+                    .email(existingFriend.getEmail()) // 기존 이메일 유지
+                    .fcmToken(existingFriend.getFcmToken()) // 기존 fcmToken 유지
+                    .name(name != null ? name : existingFriend.getName()) // 수정할 이름이 없으면 기존 이름 유지
+                    .phoneNumber(phoneNumber != null ? phoneNumber : existingFriend.getPhoneNumber()) // 수정할 번호가 없으면 기존 번호 유지
+                    .gender(gender != null ? gender : existingFriend.getGender()) // 수정할 성별이 없으면 기존 성별 유지
+                    .birthDate(birthDate != null ? birthDate : existingFriend.getBirthDate()) // 수정할 생년월일이 없으면 기존 생년월일 유지
                     .build();
 
             // 새로운 객체를 저장하고 반환
