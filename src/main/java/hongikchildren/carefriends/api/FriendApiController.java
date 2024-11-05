@@ -190,6 +190,20 @@ public class FriendApiController {
         return ResponseEntity.ok(friendInfoResponse);
     }
 
+    @DeleteMapping("/unregister/{friendId}")
+    public ResponseEntity<Void> deleteFriend(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable UUID friendId) {
+
+        String email = userDetails.getUsername(); // JWT에서 이메일 추출
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        // 친구 삭제 로직 호출
+        friendService.unregister(friendId);
+
+        return ResponseEntity.noContent().build(); // 204 No Content 반환
+    }
+
     @Data
     static class AddFriendRequest{
         private UUID friendId;
