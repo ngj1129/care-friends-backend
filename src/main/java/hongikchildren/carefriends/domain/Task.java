@@ -18,7 +18,7 @@ public class Task {
     @Column(name="taskId")
     private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name="friendId")
     private Friend friend;
 

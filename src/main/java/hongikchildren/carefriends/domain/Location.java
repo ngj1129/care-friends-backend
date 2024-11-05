@@ -21,7 +21,7 @@ public class Location {
     private Double longitude; // 경도
     private LocalDateTime timestamp; // 타임스탬프 (위치 정보 기록 시간)
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name="friendId")
     private Friend friend;
 
