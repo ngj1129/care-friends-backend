@@ -3,6 +3,9 @@ package hongikchildren.carefriends.service;
 import hongikchildren.carefriends.domain.Friend;
 import hongikchildren.carefriends.domain.Gender;
 import hongikchildren.carefriends.repository.FriendRepository;
+import hongikchildren.carefriends.repository.FriendRequestRepository;
+import hongikchildren.carefriends.repository.LocationRepository;
+import hongikchildren.carefriends.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,20 @@ import java.util.UUID;
 public class FriendService {
 
     private final FriendRepository friendRepository;
+
+    //    멤버 탈퇴전용을 위한 Repo
+    private final FriendRequestRepository friendRequestRepository;
+    private final LocationRepository locationRepository;
+    private final TaskRepository taskRepository;
+
+
+
+    //    탈퇴 메서드
+    @Transactional
+    public void unregister(UUID friendId){
+//      friend 삭제
+        friendRepository.deleteByFriendId(friendId);
+    }
 
     // Friend 저장
     @Transactional
