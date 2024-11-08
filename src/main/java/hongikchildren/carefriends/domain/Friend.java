@@ -46,13 +46,13 @@ public class Friend implements User {
     @JoinColumn(name = "caregiverId")
     private Caregiver caregiver;
 
-    @OneToMany(mappedBy = "friend")
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Task> tasks =new ArrayList<>();
 
-    @OneToMany(mappedBy = "friend")
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FriendRequest> friendRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "friend")
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
     @Builder

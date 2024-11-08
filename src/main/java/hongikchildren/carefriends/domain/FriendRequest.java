@@ -19,7 +19,7 @@ public class FriendRequest {
     @JoinColumn(name="caregiverId")
     private Caregiver caregiver;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="friendId")
     private Friend friend;
 
