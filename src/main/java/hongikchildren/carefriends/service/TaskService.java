@@ -124,6 +124,14 @@ public class TaskService {
         }
     }
 
+
+    @Transactional
+    public void setTaskStatusToDone(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
+        task.updateStatus(Status.DONE);
+    }
+
     public List<Task> getTask(LocalDate currentDate) {
         List<Task> result = taskRepository.findByDate(currentDate);
         return result;

@@ -55,6 +55,9 @@ public class Friend implements User {
     @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Treatment> treatments =new ArrayList<>();
+
     @Builder
     public Friend(UUID id, String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, LocalTime breakfast, LocalTime lunch, LocalTime dinner, String fcmToken) {
         this.id = id;
@@ -99,6 +102,16 @@ public class Friend implements User {
     public void addLocation(Location location){
         this.locations.add(location);
         location.setFriend(this);
+    }
+
+    public void addTreatment(Treatment treatment){
+        this.treatments.add(treatment);
+        treatment.setFriend(this); // Task 엔티티의 Friend 설정
+    }
+
+    public void removeTreatment(Treatment treatment){
+        this.treatments.remove(treatment);
+        treatment.removeFriend(); // Task 엔티티의 Friend 초기화
     }
 
 }

@@ -1,7 +1,9 @@
 package hongikchildren.carefriends.repository;
 
 import hongikchildren.carefriends.domain.Friend;
+import hongikchildren.carefriends.domain.Hospital;
 import hongikchildren.carefriends.domain.Task;
+import hongikchildren.carefriends.domain.TaskType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +30,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Transactional
     @Query("UPDATE Task e SET e.title = :title, e.location = :location, e.memo = :memo WHERE e.id = :id")
     int updateTask(@Param("id") Long id, @Param("title") String title, @Param("location") String location, @Param("memo") String memo);
+
+    //프렌드가 방문한 특정 병원의 진료 목록
+    List<Task> findByFriendAndHospitalAndTaskType(Friend friend, Hospital hospital, TaskType taskType);
+
+    //프렌드의 모든 진료 목록
+    List<Task> findByFriendAndTaskType(Friend friend, TaskType taskType);
 }
