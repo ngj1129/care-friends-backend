@@ -38,7 +38,7 @@ public class JWTUtil {
     // 이메일을 기반으로 JWT 토큰 생성
     public String createJwt(String email) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 86400000); // 1일간 유효한 토큰
+        Date expiryDate = new Date(now.getTime() + 864000000); // 1일간 유효한 토큰
 
         return Jwts.builder()
                 .claim("email", email)

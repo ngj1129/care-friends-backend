@@ -60,7 +60,8 @@ public class FriendApiController {
                         friend.getName(),
                         friend.getPhoneNumber(),
                         friend.getBirthDate(),
-                        friend.getGender()
+                        friend.getGender(),
+                        friend.getProfileImg()
                 ))
                 .collect(Collectors.toList());
     }
@@ -82,7 +83,8 @@ public class FriendApiController {
                 caregiver.getName(),
                 caregiver.getPhoneNumber(),
                 caregiver.getBirthDate(),
-                caregiver.getGender()
+                caregiver.getGender(),
+                caregiver.getProfileImg()
         );
     }
 
@@ -185,7 +187,8 @@ public class FriendApiController {
                 friend.getName(),
                 friend.getPhoneNumber(),
                 friend.getBirthDate(),
-                friend.getGender()
+                friend.getGender(),
+                friend.getProfileImg()
         );
         return ResponseEntity.ok(friendInfoResponse);
     }
@@ -264,13 +267,15 @@ public class FriendApiController {
         private String phoneNumber;
         private LocalDate birthDate;
         private Gender gender;
+        private String profileImg;
 
-        public FriendInfoResponse(UUID friendId, String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+        public FriendInfoResponse(UUID friendId, String name, String phoneNumber, LocalDate birthDate, Gender gender, String profileImg) {
             this.friendId = friendId;
             this.name = name;
             this.phoneNumber = phoneNumber;
             this.birthDate = birthDate;
             this.gender = gender;
+            this.profileImg = profileImg;
         }
     }
 
@@ -280,12 +285,14 @@ public class FriendApiController {
         private String phoneNumber;
         private LocalDate birthDate;
         private Gender gender;
+        private String profileImg;
 
-        public CaregiverInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender) {
+        public CaregiverInfoResponse(String name, String phoneNumber, LocalDate birthDate, Gender gender, String profileImg) {
             this.name = name;
             this.phoneNumber = phoneNumber;
             this.birthDate = birthDate;
             this.gender = gender;
+            this.profileImg = profileImg;
         }
     }
 }
