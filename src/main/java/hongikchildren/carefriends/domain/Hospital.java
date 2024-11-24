@@ -20,6 +20,7 @@ public class Hospital {
 
     private String name;
 
+    @Column(name = "link", length = 1000)
     private String link;
 
     private String address;

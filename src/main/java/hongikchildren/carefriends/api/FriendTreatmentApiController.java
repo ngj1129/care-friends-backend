@@ -37,6 +37,10 @@ public class FriendTreatmentApiController {
         Friend friend = friendService.getFriendByEmail(email)
                 .orElseThrow(() -> new RuntimeException("프렌드를 찾을 수 없습니다."));
 
+        System.out.println(treatmentRequest.getLink());
+        if (treatmentRequest.getLink().length() > 1000) {
+            throw new IllegalArgumentException("URL length exceeds the maximum allowed size");
+        }
 
         // 병원 조회 또는 새 병원 생성
         Hospital hospital = hospitalService.getHospitalByLinkOrCreate(
