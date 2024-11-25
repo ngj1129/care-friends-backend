@@ -70,4 +70,17 @@ public class S3Uploader {
         return Optional.empty();
     }
 
+    public void deleteFile(String fileUrl, String dirName) {
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1); // URL에서 파일명 추출
+        String fullPath = dirName + "/" + fileName;
+
+        try {
+            amazonS3Client.deleteObject(bucket, fullPath); // S3에서 파일 삭제
+            log.info("S3에서 파일이 삭제되었습니다: {}", fullPath);
+        } catch (Exception e) {
+            log.error("S3 파일 삭제 실패: {}", fullPath, e);
+            throw new IllegalArgumentException("S3 파일 삭제 중 오류가 발생했습니다.");
+        }
+    }
+
 }

@@ -46,7 +46,7 @@ public class ProfileApiController {
     }
 
     @PostMapping("/img")
-    public ProfileResponse saveMedicine(@AuthenticationPrincipal UserDetails userDetails, @RequestPart(required = false) MultipartFile image) {
+    public ProfileResponse saveProfileImg(@AuthenticationPrincipal UserDetails userDetails, @RequestPart(required = false) MultipartFile image) {
         String email = userDetails.getUsername();
         System.out.println("JWT에서 추출된 이메일: " + email);
 
@@ -61,6 +61,36 @@ public class ProfileApiController {
         User user = userService.setProfile(email, getImageUrl);
 
         return new ProfileResponse(user.getProfileImg(), user.getId(), user.getName(), user.getPhoneNumber(), user.getBirthDate(), user.getGender());
+    }
+
+    @DeleteMapping("/img")
+    public ResponseEntity<String> deleteProfileImg(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        System.out.println("JWT에서 추출된 이메일: " + email);
+
+        // 사용자 조회
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            return new ResponseEntity<>("사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+        }
+
+        String profileImgUrl = user.getProfileImg();
+        if (profileImgUrl == null || profileImgUrl.isEmpty()) {
+            return new ResponseEntity<>("삭제할 프로필 이미지가 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            // S3Uploader를 사용해 S3에서 파일 삭제
+            s3Uploader.deleteFile(profileImgUrl, "profile");
+
+            // 데이터베이스 업데이트 (프로필 이미지 URL을 null로 설정)
+            userService.setProfile(email, null);
+
+            return new ResponseEntity<>("프로필 이미지가 성공적으로 삭제되었습니다.", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("프로필 이미지 삭제 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PatchMapping("/edit")
