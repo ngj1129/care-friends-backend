@@ -118,19 +118,19 @@ public class FriendApiController {
         return ResponseEntity.ok().build();
     }
 
-        // 보호자가 관리하는 친구 삭제 api
-        @DeleteMapping("/{friendId}")
-        public ResponseEntity<Void> deleteFriendFromCaregiver(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID friendId){
-            String email = userDetails.getUsername();
-            System.out.println("JWT에서 추출된 이메일: " + email);
+    // 보호자가 관리하는 친구 삭제 api
+    @DeleteMapping("/{friendId}")
+    public ResponseEntity<Void> deleteFriendFromCaregiver(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID friendId){
+        String email = userDetails.getUsername();
+        System.out.println("JWT에서 추출된 이메일: " + email);
 
-            Caregiver caregiver = caregiverService.getCaregiverByEmail(email).orElseThrow();
+        Caregiver caregiver = caregiverService.getCaregiverByEmail(email).orElseThrow();
 
-            Friend friend = friendService.getFriendById(friendId).orElseThrow();
+        Friend friend = friendService.getFriendById(friendId).orElseThrow();
 
-            caregiverService.deleteFriendFromCaregiver(caregiver.getId(), friend);
-            return ResponseEntity.ok().build();
-        }
+        caregiverService.deleteFriendFromCaregiver(caregiver.getId(), friend);
+        return ResponseEntity.ok().build();
+    }
 
     // 보호자가 보낸 친구 요청 취소
     @PostMapping("/{requestId}/cancel")
@@ -191,20 +191,6 @@ public class FriendApiController {
                 friend.getProfileImg()
         );
         return ResponseEntity.ok(friendInfoResponse);
-    }
-
-    @DeleteMapping("/unregister/{friendId}")
-    public ResponseEntity<Void> deleteFriend(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable UUID friendId) {
-
-        String email = userDetails.getUsername(); // JWT에서 이메일 추출
-        System.out.println("JWT에서 추출된 이메일: " + email);
-
-        // 친구 삭제 로직 호출
-        friendService.unregister(friendId);
-
-        return ResponseEntity.noContent().build(); // 204 No Content 반환
     }
 
     @Data

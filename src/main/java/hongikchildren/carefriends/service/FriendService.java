@@ -22,20 +22,6 @@ public class FriendService {
 
     private final FriendRepository friendRepository;
 
-    //    멤버 탈퇴전용을 위한 Repo
-    private final FriendRequestRepository friendRequestRepository;
-    private final LocationRepository locationRepository;
-    private final TaskRepository taskRepository;
-
-
-
-    //    탈퇴 메서드
-    @Transactional
-    public void unregister(UUID friendId){
-//      friend 삭제
-        friendRepository.deleteByFriendId(friendId);
-    }
-
     // Friend 저장
     @Transactional
     public Friend saveFriend(String name, String phoneNumber, String email, Gender gender, LocalDate birthDate, String fcmToken) {
@@ -84,12 +70,5 @@ public class FriendService {
         } else{
             throw new RuntimeException(id + "라는 id의 Friends를 찾을 수 없습니다. ");
         }
-    }
-
-
-    // Friend 삭제
-    @Transactional
-    public void deleteFriend(UUID id){
-        friendRepository.deleteById(id);
     }
 }

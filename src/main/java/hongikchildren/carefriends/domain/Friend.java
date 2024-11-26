@@ -47,6 +47,9 @@ public class Friend implements User {
     private Caregiver caregiver;
 
     @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Hospital> hospitals =new ArrayList<>();
+
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Task> tasks =new ArrayList<>();
 
     @OneToMany(mappedBy = "friend", cascade = CascadeType.REMOVE, orphanRemoval = true)

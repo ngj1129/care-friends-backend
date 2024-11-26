@@ -19,9 +19,20 @@ public interface FriendRepository extends JpaRepository<Friend, UUID> {
 
     Optional<Friend> findByEmail(String email);
 
-    // friendId로 Friend 엔티티 삭제하는 메서드
+    /*
+    프렌드 탈퇴
+     */
     @Modifying
     @Transactional
     @Query("DELETE FROM Friend f WHERE f.id = :friendId")
     void deleteByFriendId(UUID friendId);
+
+
+    /*
+    보호자 탈퇴 시 프렌드의 보호자를 삭제
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE Friend f SET f.caregiver = null WHERE f.caregiver.id = :caregiverId")
+    void removeCaregiverFromFriends(UUID caregiverId);
 }
