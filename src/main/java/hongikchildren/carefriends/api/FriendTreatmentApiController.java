@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -51,11 +52,12 @@ public class FriendTreatmentApiController {
                 friend
         );
 
-        String treatmentTitle = treatmentRequest.getTitle() + "방문 일정";
+        String treatmentTitle = treatmentRequest.getTitle() + " 방문";
         Task treatment = treatmentService.saveTreatment(friend, hospital, treatmentRequest.getDate(),
                 treatmentRequest.getTime(), treatmentTitle, treatmentRequest.getAddress(), treatmentRequest.getMemo());
 
         return new TreatmentResponse(
+                treatment.getId(),
                 treatment.getHospital().getName(),
                 treatment.getHospital().getLink(),
                 treatment.getHospital().getAddress(),
@@ -67,8 +69,6 @@ public class FriendTreatmentApiController {
     }
     //진료 일정 수정
 
-    //진료 일정 삭제
-
     //진료 상태 변경
     @PatchMapping("/{taskId}/complete")
     public ResponseEntity<Void> completeTask(@PathVariable Long taskId) {
@@ -76,7 +76,12 @@ public class FriendTreatmentApiController {
         return ResponseEntity.noContent().build();
     }
 
-
+    //병원 삭제
+    @DeleteMapping("/hospital")
+    public void deleteHospital(@RequestBody Map<String, Long> payload) {
+        System.out.println(payload.get("id"));
+        hospitalService.deleteHospital(payload.get("id"));
+    }
 
     //프렌드가 방문한 병원 목록
     @GetMapping("/hospital")
@@ -92,6 +97,7 @@ public class FriendTreatmentApiController {
         // Hospital 엔티티 목록을 HospitalResponse 목록으로 변환
         return hospitals.stream()
                 .map(hospital -> new HospitalResponse(
+                        hospital.getId(),
                         hospital.getName(),
                         hospital.getLink(),
                         hospital.getAddress(),
@@ -118,6 +124,7 @@ public class FriendTreatmentApiController {
 
         return treatments.stream()
                 .map(treatment -> new TreatmentResponse(
+                        treatment.getId(),
                         treatment.getTitle(),
                         treatment.getHospital().getLink(),
                         treatment.getHospital().getAddress(),
@@ -134,12 +141,14 @@ public class FriendTreatmentApiController {
 
     @Data
     static class HospitalResponse {
+        private Long id;
         private String title; //병원 이름
         private String link; //병원 url
         private String address; //병원 주소
         private String telephone; //병원 전화번호
 
-        public HospitalResponse(String title, String link, String address, String telephone) {
+        public HospitalResponse(Long id, String title, String link, String address, String telephone) {
+            this.id = id;
             this.title = title;
             this.link = link;
             this.address = address;
@@ -170,6 +179,7 @@ public class FriendTreatmentApiController {
 
     @Data
     static class TreatmentResponse {
+        private Long id;
         private String title; //병원 이름
         private String link; //병원 url
         private String address; //병원 주소
@@ -178,7 +188,8 @@ public class FriendTreatmentApiController {
         private LocalTime time;
         private String memo;
 
-        public TreatmentResponse(String title, String link, String address, String telephone, LocalDate date, LocalTime time, String memo) {
+        public TreatmentResponse(Long id, String title, String link, String address, String telephone, LocalDate date, LocalTime time, String memo) {
+            this.id = id;
             this.title = title;
             this.link = link;
             this.address = address;

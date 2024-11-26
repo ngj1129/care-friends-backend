@@ -33,11 +33,6 @@ public class HospitalService {
         return hospitalRepository.save(hospital);
     }
 
-//    public Hospital getHospital(String link) {
-//         return hospitalRepository.findByLink(link)
-//                 .orElseThrow(() -> new NoSuchElementException("Hospital not found for link: " + link));
-//    }
-
     public Hospital getHospitalByLinkOrCreate(String link, String title, String address, String telephone, Friend friend) {
         // link로 병원 조회
         return hospitalRepository.findByLink(link)
@@ -61,4 +56,7 @@ public class HospitalService {
     public List<Hospital> getAllHospitals(Friend friend) {
         return hospitalRepository.findAllByFriend(friend);
     }
+
+    @Transactional
+    public void deleteHospital(Long id) { hospitalRepository.deleteById(id); }
 }
