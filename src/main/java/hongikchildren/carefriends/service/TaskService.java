@@ -66,7 +66,7 @@ public class TaskService {
 
     public void createCustomTask(Task task, PeriodType periodType, int period) {
         LocalDate startDate = task.getDate();
-        for (int i = 1; i <= period; i++) {
+        for (int i = 1; i < period; i++) {
             LocalDate newDate = switch (periodType) {
                 case DAY -> startDate.plusDays(i);
                 case WEEK -> startDate.plusWeeks(i);
