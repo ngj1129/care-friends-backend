@@ -66,6 +66,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/ws/**", "/signal/**").permitAll()
                         .requestMatchers("/login", "/", "/join", "/signup", "/kakao/callback").permitAll()
                         .anyRequest().authenticated());
 
