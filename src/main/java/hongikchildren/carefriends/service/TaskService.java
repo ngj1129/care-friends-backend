@@ -112,6 +112,7 @@ public class TaskService {
                 .title("일정을 확인하세요")
                 .body("오늘 '" + task.getTitle() + "'일정이 " + formattedTime + "에 있습니다.")
                 .receiverType("Friend")
+                .type("schedule")
                 .build();
 
         try {

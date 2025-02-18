@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -23,12 +25,7 @@ public class FcmServiceImpl implements FcmService {
     private final FriendRepository friendRepository;
     private final CaregiverRepository caregiverRepository;
 
-    /**
-     * 푸시 메시지 처리를 수행하는 비즈니스 로직
-     *
-     * @param fcmSendDto 모바일에서 전달받은 Object
-     * @return 성공(1), 실패(0)
-     */
+    // 메시지 전송
     @Override
     public int sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
 
@@ -49,11 +46,7 @@ public class FcmServiceImpl implements FcmService {
         return response.getStatusCode() == HttpStatus.OK ? 1 : 0;
     }
 
-    /**
-     * Firebase Admin SDK의 비공개 키를 참조하여 Bearer 토큰을 발급 받습니다.
-     *
-     * @return Bearer token
-     */
+    // 토큰 발급
     private String getAccessToken() throws IOException {
         String firebaseConfigPath = "firebase/carefriends-121e6-firebase-adminsdk-v1geu-f14d7de41a.json";
 
@@ -66,29 +59,28 @@ public class FcmServiceImpl implements FcmService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    /**
-     * FCM 전송 정보를 기반으로 메시지를 구성합니다. (Object -> String)
-     *
-     * @param fcmSendDto FcmSendDto
-     * @return String
-     */
+    // 메시지 구성
     private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
 
         String fcmToken;
-
-        if("Friend".equals(fcmSendDto.getReceiverType())){
+        if ("Friend".equals(fcmSendDto.getReceiverType())) {
             fcmToken = friendRepository.findById(fcmSendDto.getId())
-                    .orElseThrow(()->new RuntimeException("프렌드 찾을 수 없음"))
+                    .orElseThrow(() -> new RuntimeException("프렌드 찾을 수 없음"))
                     .getFcmToken();
-        } else if ("Caregiver".equals(fcmSendDto.getReceiverType())){
+        } else if ("Caregiver".equals(fcmSendDto.getReceiverType())) {
             fcmToken = caregiverRepository.findById(fcmSendDto.getId())
-                    .orElseThrow(()->new RuntimeException("보호자 찾을 수 없음"))
+                    .orElseThrow(() -> new RuntimeException("보호자 찾을 수 없음"))
                     .getFcmToken();
-        } else{
+        } else {
             throw new RuntimeException("Invalid receiver type");
         }
 
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("type", fcmSendDto.getType());
+        dataMap.put("roomName", fcmSendDto.getData()); // `data`에 roomName을 포함
+
+        // FCM 메시지 생성
         FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
                 .message(FcmMessageDto.Message.builder()
                         .token(fcmToken)
@@ -97,7 +89,12 @@ public class FcmServiceImpl implements FcmService {
                                 .body(fcmSendDto.getBody())
                                 .image(null)
                                 .build()
-                        ).build()).validateOnly(false).build();
+                        )
+                        .data(dataMap)
+                        .build()
+                )
+                .validateOnly(false)
+                .build();
 
         return om.writeValueAsString(fcmMessageDto);
     }
