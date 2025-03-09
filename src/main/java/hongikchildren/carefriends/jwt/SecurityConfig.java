@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/ws/**", "/signal/**").permitAll()
                         .requestMatchers("/login", "/", "/join", "/signup", "/kakao/callback").permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .anyRequest().authenticated());
 
         //JWTFilter 등록
