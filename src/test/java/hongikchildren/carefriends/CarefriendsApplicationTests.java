@@ -1,14 +1,12 @@
 package hongikchildren.carefriends;
 
-import hongikchildren.carefriends.domain.Caregiver;
-import hongikchildren.carefriends.domain.Gender;
+import hongikchildren.carefriends.caregiver.domain.Caregiver;
+import hongikchildren.carefriends.user.domain.Gender;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 
 @SpringBootTest
 class CarefriendsApplicationTests {

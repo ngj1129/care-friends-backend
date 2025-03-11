@@ -1,4 +1,4 @@
-package hongikchildren.carefriends.service;
-
-public class MedicineServiceTest {
-}
+//package hongikchildren.carefriends.service;
+//
+//public class MedicineServiceTest {
+//}
