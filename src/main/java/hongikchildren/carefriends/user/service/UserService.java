@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -31,13 +33,13 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        if (caregiverRepository.findByEmail(email).isPresent()) {
-            return caregiverRepository.findByEmail(email).get();
+        Optional<Caregiver> caregiver = caregiverRepository.findByEmail(email);
+        if (caregiver.isPresent()) {
+            return caregiver.get();
         }
-        if (friendRepository.findByEmail(email).isPresent()) {
-            return friendRepository.findByEmail(email).get();
-        }
-        return null;
+
+        Optional<Friend> friend = friendRepository.findByEmail(email);
+        return friend.orElse(null);
     }
 
     @Transactional
