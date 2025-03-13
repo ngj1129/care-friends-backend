@@ -22,28 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final CaregiverRepository caregiverRepository;
     private final FriendRepository friendRepository;
 
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//
-//        // 먼저 Caregiver에서 조회
-//        Caregiver caregiver = caregiverRepository.findByEmail(email).orElse(null);
-//        if (caregiver != null) {
-//            return new CustomUserDetails(caregiver);
-//        }
-//
-//        // Caregiver에 없으면 Friend에서 조회
-//        Friend friend = friendRepository.findByEmail(email).orElse(null);
-//        if (friend != null) {
-//            return new CustomUserDetails(friend);
-//        }
-//
-//        // Caregiver나 Friend 모두 없으면 예외 처리
-//        throw new UsernameNotFoundException("User not found with email: " + email);
-//    }
-
-    @Cacheable(value = "USER_DETAILS", key = "#email", cacheManager = "cacheManager")
+    @Cacheable(value = "USER_DETAILS", key = "#email")
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.info("DB에서 사용자 조회 시도: {}", email);
         Caregiver caregiver = caregiverRepository.findByEmail(email).orElse(null);
         if (caregiver != null) {

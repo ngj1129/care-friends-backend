@@ -1,27 +1,24 @@
 package hongikchildren.carefriends.infra.auth.jwt;
 
+import hongikchildren.carefriends.infra.auth.security.CustomUserDetails;
 import hongikchildren.carefriends.infra.auth.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
-
-    public JWTFilter(JWTUtil jwtUtil, CustomUserDetailsService userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -49,7 +46,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getEmail(token);
 
         // DB에서 사용자를 조회하여 UserDetails 획득
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         // 스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

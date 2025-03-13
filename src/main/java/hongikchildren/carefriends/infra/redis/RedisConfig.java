@@ -1,6 +1,8 @@
 package hongikchildren.carefriends.infra.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -18,24 +20,17 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig {
 
-//    @Bean
-//    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-//        RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofHours(1))
-//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-//
-//        return RedisCacheManager.builder(redisConnectionFactory)
-//                .cacheDefaults(cacheConfig)
-//                .build();
-//    }
-
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+                .allowIfBaseType(Object.class)
+                .build();
+
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule()); // Java 8 시간 API 지원
+        objectMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
 
         // 직렬화 설정
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
 
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofHours(1)) // 캐시 유효 기간 설정 (예: 1시간)

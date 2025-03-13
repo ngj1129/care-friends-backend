@@ -2,20 +2,22 @@ package hongikchildren.carefriends.infra.auth.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import hongikchildren.carefriends.user.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class CustomUserDetails implements UserDetails {
-
-    public CustomUserDetails(UUID id, String email) {
-        this.id = id;
-        this.email = email;
-    }
 
     public UUID getId() {
         return id;
